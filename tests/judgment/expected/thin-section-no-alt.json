@@ -1,0 +1,66 @@
+{
+  "fixture": "thin-section-no-alt",
+  "source_spec": "tests/judgment/fixtures/thin-section-no-alt/spec.md",
+  "repairs_expected": [
+    {
+      "level": "Trace",
+      "reason": "The Edge Cases section's only line ('The system behaves sensibly') is a placeholder-quality statement, and no other section documents any failure/error condition — every Acceptance Scenario describes normal toggle behavior only.",
+      "proposed_repair": "Add a specific documented failure condition to Edge Cases, e.g. what happens if the toggle change fails to apply (reverts to the previous value, user sees an error) rather than leaving the setting in a silent partial state."
+    }
+  ],
+  "questions_common": [
+    {
+      "level": "Recognise",
+      "format": "multiple-choice",
+      "text": "What is the primary purpose of this feature?",
+      "options": [
+        "Let a user toggle whether read receipts are sent, without retroactively affecting past receipts",
+        "Let a user delete previously sent read receipts",
+        "Let a user see who has read their messages",
+        "Let a user mute notifications for a conversation"
+      ],
+      "correct_option_index": 0,
+      "expected_answer": "To let a user turn read receipts on or off, with the change applying only to messages read afterward, never retroactively.",
+      "source_heading": "User Story 1 - Turn read receipts on or off (Priority: P1)"
+    },
+    {
+      "level": "Explain",
+      "format": "multiple-choice",
+      "text": "What happens to a read receipt that was already sent before the user changes the toggle?",
+      "options": [
+        "It is retracted immediately",
+        "It remains as it was — the change is not retroactive",
+        "It is queued for deletion at the next sync",
+        "The other party is notified the setting changed"
+      ],
+      "correct_option_index": 1,
+      "expected_answer": "It remains unchanged — a toggle change is never applied retroactively to a receipt already sent.",
+      "source_heading": "FR-003; Acceptance Scenario 3"
+    },
+    {
+      "level": "Apply",
+      "format": "free-text",
+      "text": "A user currently has read receipts on, reads 5 messages, then toggles read receipts off, then reads 3 more messages. How many of these 8 messages will have sent a read receipt?",
+      "expected_answer": "5 — the first 5 messages were read while receipts were on and are unaffected by the later toggle (not retracted), while the 3 read after toggling off will not send a receipt.",
+      "source_heading": "FR-003; Acceptance Scenarios 1 and 3"
+    },
+    {
+      "level": "Evaluate",
+      "format": "free-text",
+      "text": "This spec requires that a toggle change applies only to future messages (FR-003) and that a change takes effect for the very next message with no delay (SC-001). If a user reads a message at nearly the same instant they toggle the setting, is there any ambiguity about which behavior applies?",
+      "expected_answer": "The spec doesn't explicitly resolve simultaneity — it establishes a clear ordering rule (only messages read after the change are affected) and a no-delay requirement, but doesn't define precisely what 'at the same instant' means. FR-003's before/after framing implies the read event's own timestamp relative to the toggle event is what should govern, but this is a legitimate ambiguity the spec leaves unresolved.",
+      "source_heading": "FR-003; SC-001"
+    }
+  ],
+  "trace_question_if_approved": {
+    "level": "Trace",
+    "format": "free-text",
+    "text": "What happens if the toggle change fails to apply, for example due to a connectivity issue?",
+    "expected_answer": "The setting reverts to its previous value and the user sees an error, rather than silently leaving the setting in an inconsistent partial state.",
+    "source_heading": "Edge Cases (repaired, per repairs_expected)"
+  },
+  "trace_outcome_if_declined": {
+    "action": "state_no_alternative_exists",
+    "expected_statement": "The checkpoint states plainly that no established content exists anywhere in this spec to truthfully support a Trace-level question, since every other section documents only normal toggle behavior and no failure/error condition — it does not ask an untruthful question or pad the session with unrelated content."
+  }
+}

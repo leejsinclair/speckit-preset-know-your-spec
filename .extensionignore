@@ -1,0 +1,5 @@
+specs/
+tests/
+.specify/
+.claude/
+.gitignore
