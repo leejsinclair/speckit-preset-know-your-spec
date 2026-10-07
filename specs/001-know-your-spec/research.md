@@ -205,7 +205,9 @@ decision, rationale, and rejected alternative(s).
   taken; everything there that records an answer has no counterpart here.
 - **Why this does not breach FR-012 / SC-005**: the page has no route that changes anything, and
   the helper's one file is outside the repository and removed when the page stops. A unit test
-  compares the project's files before and after serving.
+  compares the project's files before and after serving. If the OS temporary directory is
+  itself inside the project (`TMPDIR` set that way), the helper uses the first usual place
+  outside it, and refuses to start (`no-runtime-dir`) if there is none.
 - **Why it does not breach FR-016**: the offer is skipped silently when the helper or `python3`
   is absent, and a page that cannot start is reported in one line and the checkpoint continues.
 - **Alternatives considered**: answering the questions on the page (rejected — it needs a relay

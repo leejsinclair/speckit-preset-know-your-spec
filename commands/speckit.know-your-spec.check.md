@@ -181,7 +181,8 @@ from which were skipped (e.g. by level: Recognise ✓ passed, Explain ✓ passed
 Trace ✓ passed, Evaluate ✓ passed). Do not write this summary, or any part of the session, to
 `spec.md` or any other file.
 
-If you started the spec page in Step 2a, stop it now with `specpage.py serve --spec <path to
+If you started the spec page in Step 2a, stop it now with
+`python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec <path to
 spec.md> --stop`.
 
 ## Step 5 — Early exit
@@ -190,7 +191,8 @@ The developer can end the session at any point before completion, for any reason
 saying so. If they do: acknowledge it and stop immediately. Do not write a partial summary, a
 partial record, or anything else about the session to any file — there is nothing to clean up,
 because nothing was ever written in the first place. If you started the spec page in Step 2a,
-stop it with `specpage.py serve --spec <path to spec.md> --stop`.
+stop it with `python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec
+<path to spec.md> --stop`.
 
 ## Invariants (apply throughout every step above)
 

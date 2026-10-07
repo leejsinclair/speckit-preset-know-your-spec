@@ -204,6 +204,45 @@ class IdleTest(ServerCase):
         self.assertTrue(self.server.stopped.is_set())
 
 
+class RuntimeDirTest(unittest.TestCase):
+    """The runtime file never lands inside the project, whatever ``TMPDIR`` says."""
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.root = Path(self.dir.name).resolve() / "project"
+        self.spec = self.root / "specs" / "001-lockers" / "spec.md"
+        self.spec.parent.mkdir(parents=True)
+        (self.root / ".specify").mkdir()
+        self.spec.write_text(SPEC, encoding="utf-8")
+        self.inside = self.root / "tmp"
+        self.inside.mkdir()
+        self.real = specpage.tempfile.gettempdir
+        self.addCleanup(setattr, specpage.tempfile, "gettempdir", self.real)
+        self.addCleanup(self.dir.cleanup)
+
+    def test_the_project_is_the_outermost_marked_folder(self):
+        (self.spec.parent / ".git").mkdir()
+        self.assertEqual(specpage.project_root(self.spec), self.root)
+
+    def test_a_temporary_directory_inside_the_project_is_not_used(self):
+        specpage.tempfile.gettempdir = lambda: str(self.inside)
+        path = specpage.runtime_path(self.spec)
+        self.assertNotIn(self.root, path.resolve().parents)
+        before = snapshot(self.root)
+        self.assertFalse(specpage.status(self.spec)["running"])
+        self.assertEqual(snapshot(self.root), before)
+
+    def test_it_refuses_when_nowhere_outside_the_project_can_be_written(self):
+        specpage.tempfile.gettempdir = lambda: str(self.inside)
+        real = specpage.os.access
+        self.addCleanup(setattr, specpage.os, "access", real)
+        specpage.os.access = lambda path, mode: False
+        with self.assertRaises(specpage.Refused) as raised:
+            specpage.serve(self.spec, emit=lambda payload: None, port=0)
+        self.assertEqual(raised.exception.payload["refusals"][0]["code"], "no-runtime-dir")
+        self.assertEqual(list(self.inside.iterdir()), [])
+
+
 class RuntimeTest(unittest.TestCase):
     """``serve``, ``--status`` and ``--stop`` as the command runs them, through the runtime file."""
 

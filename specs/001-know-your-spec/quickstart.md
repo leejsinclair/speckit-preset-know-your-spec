@@ -137,13 +137,29 @@ outcome).
 **Expected outcome**: a concise, session-only summary is presented distinguishing passed
 questions from skipped ones — spoken in the conversation only, never written to any file.
 
+## 9. The spec page (User Story 4)
+
+Needs `python3`. Start a checkpoint and, when asked "Open the spec on a page in your browser, or
+stay in chat?", choose the page.
+
+**Expected outcome**: the agent gives an address ending in `?t=…` and does not claim to have
+opened it; opening it shows the spec rendered, read-only, with any diagram drawn. Question 1
+follows in the conversation. Answer a question wrongly: the coaching pointer includes a link that
+opens the page at the heading. Edit `spec.md`: within a few seconds the page says the spec has
+changed and offers to reload. End the session: `git status` shows nothing from the page, and
+`python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec <spec.md>
+--status` reports that no page is running.
+
+Without `python3` on `PATH`, the question is not asked and the checkpoint is as in steps 2-8.
+
 ## Automated test suite
 
 ```bash
 tests/run.sh
 ```
 
-Runs both tiers: `tests/deterministic/` (manifest and command-file structural checks) and
+Runs both tiers: `tests/deterministic/` (manifest and command-file structural checks, and the
+spec page's Python unit tests in `tests/unit/`) and
 `tests/judgment/` (single-shot derivation-quality evals against `tests/judgment/expected/`, plus
 isolated single-turn behavioral probes for the coaching/retry/skip/repair-approval rules — see
 research.md §13 for why this feature uses a hybrid eval design rather than the reference

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.2 - 2026-10-08
+
+- The command now stops the spec page by the helper's full installed path; the short form it
+  used before would not have run.
+- The page's runtime file is never written inside the project, even when `TMPDIR` points there:
+  the helper uses a place outside it, or refuses to start (`no-runtime-dir`).
+- `specs/001-know-your-spec/` now covers the page: User Story 4, FR-018 to FR-024, SC-006 to
+  SC-008, and matching updates to the plan, tasks and contracts.
+
 ## 1.1.1 - 2026-10-08
 
 - The spec page listens on every interface (`0.0.0.0`) by default, so a port forwarded from a

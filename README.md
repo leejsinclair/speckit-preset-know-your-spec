@@ -58,7 +58,7 @@ straight to the heading it points at. The quiz itself stays in the conversation.
 - It needs `python3` (3.11 or later, standard library only). Without it the offer is skipped and
   the checkpoint is exactly as described above.
 - It keeps nothing in the repository. While it runs, it holds its address in the system's
-  temporary folder; it stops when the checkpoint ends, or after an hour without use.
+  temporary folder (or, if that is inside the project, somewhere outside it); it stops when the checkpoint ends, or after an hour without use.
 
 You can also run it yourself:
 
@@ -75,7 +75,7 @@ specify extension add --dev /path/to/speckit-preset-know-your-spec
 or, once published:
 
 ```bash
-specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.1.zip
+specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.2.zip
 ```
 
 This registers `speckit.know-your-spec.check` (alias `speckit.kys-check`), wires the mandatory

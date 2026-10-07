@@ -37,6 +37,13 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
        level if any exists; if none exists anywhere in the spec, say so plainly for that level
        rather than asking an untruthful question or padding (Edge Cases).
 
+   - **Spec page offer** (after any repair, before question 1 — FR-018): if the helper and
+     `python3` are present, ask once whether to open the spec on a page or stay in chat. If the
+     page is chosen, start the helper in the background and give the developer its address
+     exactly as printed; the command never opens or fetches the address itself (FR-021). If the
+     helper or `python3` is missing, skip the offer silently; if the page refuses to start, say
+     why in one line. Either way continue to question 1 in chat.
+
 2. **Question loop** (repeated once per level, in fixed order, never regressing — FR-006):
    - Present the question. Format is `multiple-choice` for levels 1-2 only when plausible,
      mutually exclusive options exist; `free-text` otherwise for 1-2, and always for levels 3-5
@@ -49,7 +56,8 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
    - If correct/complete: mark the question `passed`, advance to the next level.
    - If incorrect/incomplete: explain the specific gap without revealing the full expected
      answer, point to `source_heading`, and present a newly-worded question at the *same* level
-     (FR-008). Repeat with no attempt limit (FR-009) until the developer either succeeds or
+     (FR-008). When the spec page is open, the pointer includes a link to that heading on the
+     page (FR-020). Repeat with no attempt limit (FR-009) until the developer either succeeds or
      explicitly invokes skip/reveal for that one question (FR-010), which marks it `skipped` and
      advances to the next level.
    - The developer may exit the session entirely at any point; if they do, the command ends
@@ -59,6 +67,7 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
    - Present a concise, session-only completion summary distinguishing passed questions from
      skipped ones (FR-013). This summary is spoken in the conversation only — never written to
      `spec.md` or any other file (FR-012).
+   - If the spec page was started, stop it — at completion and on early exit alike (FR-022).
 
 ## Postconditions / invariants
 
@@ -67,7 +76,10 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
   ever been run (FR-016, SC-004).
 - **No bookkeeping persistence**: a repository diff taken after a session contains, at most, an
   approved `spec.md` content repair from step 1 — never questions, answers, scores, or completion
-  markers (FR-012, SC-005).
+  markers (FR-012, SC-005). The spec page adds or changes nothing in the project (FR-022,
+  SC-007).
+- **The page changes only where the spec is read**: the questions asked and how they are judged
+  are the same with and without it (SC-006).
 - **Traceability**: every question actually asked is traceable to specific, established `spec.md`
   content at the moment it was asked (SC-002).
 - **No silent advancement**: a level is only ever left via an answer actually judged to

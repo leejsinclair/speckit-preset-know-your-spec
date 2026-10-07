@@ -920,11 +920,38 @@ def _server_class(host: str) -> type[PageServer]:
 # ---- the runtime file, and serve, status and stop
 
 
+PROJECT_MARKS = (".git", ".specify")
+
+
+def project_root(spec: Path) -> Path:
+    """The outermost folder above ``spec`` that is a repository or a Spec Kit project; with neither,
+    the spec's own folder."""
+    spec = Path(spec).resolve()
+    roots = [folder for folder in spec.parents if any((folder / mark).exists() for mark in PROJECT_MARKS)]
+    return roots[-1] if roots else spec.parent
+
+
+def runtime_dir(spec: Path) -> Path:
+    """Where the runtime file goes: the OS temporary directory, or, when ``TMPDIR`` puts that inside
+    the project, the first usual place outside it. Refuses ``no-runtime-dir`` when there is none,
+    because the page never writes inside the project (spec FR-012, SC-005)."""
+    root = project_root(spec)
+    for candidate in (tempfile.gettempdir(), "/tmp", "/var/tmp", Path.home()):
+        folder = Path(candidate).resolve()
+        if folder != root and root not in folder.parents and folder.is_dir() and os.access(folder, os.W_OK):
+            return folder
+    raise Refused(
+        "no-runtime-dir",
+        f"the temporary directory is inside the project at {root}, and there is no other place to keep the page's address",
+        "Set TMPDIR to a directory outside the project",
+    )
+
+
 def runtime_path(spec: Path) -> Path:
-    """``<tempdir>/kys-spec-page-<sha256(spec path)[:12]>.json``: outside the repository, so starting
+    """``<runtime dir>/kys-spec-page-<sha256(spec path)[:12]>.json``: outside the project, so starting
     the page changes nothing in it."""
     digest = hashlib.sha256(str(Path(spec).resolve()).encode("utf-8")).hexdigest()[:12]
-    return Path(tempfile.gettempdir()) / f"kys-spec-page-{digest}.json"
+    return runtime_dir(spec) / f"kys-spec-page-{digest}.json"
 
 
 def _read_runtime(path: Path) -> dict[str, Any] | None:
@@ -1006,7 +1033,7 @@ def serve(
     idle_minutes: float = IDLE_MINUTES,
 ) -> dict[str, Any]:
     """Start the page and serve until it is stopped or idle. ``emit`` prints the one JSON line with
-    the address as soon as the page listens. Refuses ``page-running``, ``no-spec``, ``port-unavailable``."""
+    the address as soon as the page listens. Refuses ``page-running``, ``no-spec``, ``port-unavailable``, ``no-runtime-dir``."""
     running = status(spec)
     if running["running"]:
         raise Refused(

@@ -21,12 +21,12 @@ itself.
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (US1, US2, US3)
+- **[Story]**: Which user story this task belongs to (US1, US2, US3, US4)
 
 ## Path Conventions
 
 Single flat-at-root Spec Kit extension package (plan.md § Project Structure):
-`extension.yml`, `commands/`, `tests/` at the repository root.
+`extension.yml`, `commands/`, `scripts/`, `tests/` at the repository root.
 
 ---
 
@@ -123,7 +123,28 @@ Single flat-at-root Spec Kit extension package (plan.md § Project Structure):
 - [X] T034 [P] Write `tests/deterministic/test-no-persistence.sh` asserting `commands/speckit.know-your-spec.check.md` contains no instruction to write questions/answers/scores/completion markers to `spec.md` or any repository file outside the approved-repair path (FR-012, SC-005)
 - [X] T035 Executed what's automatable of the 8 `quickstart.md` scenarios: Scenario 1 (install) verified for real via `specify extension add --dev` into a scratch project — command, alias, and mandatory `after_specify` hook all registered correctly, `.extensionignore` correctly excluded dev-only content; the full `tests/run.sh` suite (the closest automated proxy for Scenarios 2-8's behavioral guarantees) is green. The literal live multi-turn conversational walkthrough of Scenarios 2-8 still needs a real interactive session — see `quickstart.md`'s Validation Status note.
 
-**Checkpoint**: Feature complete, packaged, and validated against every FR/SC in spec.md. All 35 tasks complete.
+**Checkpoint**: The 1.0.0 feature is complete, packaged, and validated against FR-001 to FR-017 and SC-001 to SC-005. Tasks T001-T035 complete.
+
+---
+
+## Phase 7: User Story 4 - Read the spec on a page while answering (Priority: P3)
+
+**Goal**: An optional, read-only page showing `spec.md` in the developer's browser, offered once before question 1 (FR-018 to FR-024, SC-006 to SC-008; research.md §15). Released as 1.1.0, with fixes in 1.1.1 and 1.1.2.
+
+**Independent Test**: Start a checkpoint, choose the page, read the spec at the address given, follow a coaching link to a heading, end the session, and confirm the project's files are unchanged and no page is running.
+
+- [X] T036 [US4] Write `scripts/python/specpage.py` (standard library only): Markdown renderer with heading link targets and in-place requirement previews (FR-020), one-request-at-a-time server with a per-process key and `Host` check (FR-021), spec re-read on every request and a changed/stopped notice (FR-019, FR-024), runtime file outside the project plus `--status` / `--stop` and an idle stop (FR-022)
+- [X] T037 [US4] Declare the helper in `extension.yml` under `provides.scripts`, declare `python3` as an optional tool, and bump the version; update `contracts/extension.yml` to match
+- [X] T038 [US4] Add Step 2a to `commands/speckit.know-your-spec.check.md`: offer the page once before question 1, skip silently when the helper or `python3` is missing, report a refusal in one line and carry on (FR-018); link coaching pointers to the heading (FR-020); stop the page at completion and on early exit, by the helper's full installed path (FR-022)
+- [X] T039 [P] [US4] Write `tests/unit/test_markdown.py` and `tests/unit/test_page_server.py` (renderer, refusals without the key, policy, change detection, lifecycle, idle stop, project files unchanged, runtime file never inside the project) and `tests/deterministic/test-spec-page.sh` to run them
+- [X] T040 [P] [US4] Extend `tests/deterministic/test-command-manifest.sh`: the script entry exists and its file exists, `python3` is `required: false`, and every call to the helper in the command file uses its installed path
+- [X] T041 [P] [US4] Write `tests/judgment/probes/spec-page-offer.md` — single-turn probe: the address is given exactly, the agent does not claim to have opened it, the quiz proceeds in chat
+- [X] T042 [US4] Draw Mermaid diagrams in the browser, loading the diagram script only when the spec has a diagram and keeping the source when it cannot be drawn (FR-023)
+- [X] T043 [US4] Bind to every interface by default so a forwarded port reaches the page (FR-021)
+- [X] T044 [P] [US4] Add `.git/` and Python caches to `.extensionignore`; update `README.md` and `CHANGELOG.md`
+- [ ] T045 [US4] Run the judgment tier (`tests/run.sh` in full) against the edited command file, including the new probe, and walk quickstart.md scenario 9 in a live session
+
+**Checkpoint**: The page is implemented and covered by the deterministic tier. T045 (judgment tier and a live walkthrough) is outstanding.
 
 ---
 
@@ -133,6 +154,7 @@ Single flat-at-root Spec Kit extension package (plan.md § Project Structure):
 - **Phase 2 → Phase 3 (US1)**: strict blocker — US1 tasks edit the command file T005 created.
 - **Phase 3 (US1) → Phase 4 (US2) → Phase 5 (US3)**: recommended sequential order, since all three stories' implementation tasks (T006-T010, T017-T018, T021-T023) edit the same single command file and each story's behavior layers on top of the previous one's. Each story is still independently *testable* per its own Independent Test criteria — this ordering is about avoiding merge churn on one file, not a testing dependency.
 - **Test/fixture tasks** (T011-T016, T019-T020, T024-T028) have no dependency on their sibling implementation tasks landing first — fixtures and expected-output files can be authored any time after the relevant contracts/spec content exists, and probes can be drafted before the behavior they check is implemented.
+- **Phase 7 (US4)**: depends on Phases 1-6. T036 first; T037-T038 depend on it; T039-T041 can be written alongside; T042-T043 build on T036; T045 last.
 - **Phase 6 (Polish)**: T029-T031 depend only on Phase 1-2 (package existing). T032-T034 depend on all fixtures/probes/deterministic tests existing (T011-T028). T035 depends on every prior phase being complete.
 
 ## Parallel Execution Examples
