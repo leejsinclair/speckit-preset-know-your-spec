@@ -111,6 +111,38 @@ a question is asked from it, rather than a question being asked against absent i
 
 ---
 
+### User Story 4 - Read the spec on a page while answering (Priority: P3)
+
+Before the first question, the developer is offered the spec on a page in their browser: the
+spec rendered, with every heading a link target and each requirement previewed where it is
+referenced. The questions, answers and judging stay in the conversation; the page only changes
+where the developer reads. When coaching points at a heading, the pointer is a link to that
+heading on the page.
+
+**Why this priority**: The checkpoint is complete without it (Stories 1-3). The page makes the
+"go and re-read this section" step of coaching one click, and makes a long spec with diagrams and
+cross-references readable — a convenience, not a prerequisite.
+
+**Independent Test**: Can be fully tested by starting a checkpoint, choosing the page, and
+confirming the spec is readable at the address given, that a coaching hint links to the right
+heading, and that the repository is unchanged after the page stops.
+
+**Acceptance Scenarios**:
+
+1. **Given** a checkpoint is about to ask question 1, **When** the page is available, **Then**
+   the developer is asked once whether to open the spec on a page or stay in chat, and is not
+   asked again in that session.
+2. **Given** the developer chose the page, **When** it starts, **Then** they are given its
+   address, and the questions continue in the conversation exactly as in Stories 1-3.
+3. **Given** the page is open and an answer is incorrect, **When** coaching points at a spec
+   heading, **Then** the pointer includes a link that opens the page at that heading.
+4. **Given** the page cannot be offered or cannot start, **When** the checkpoint begins,
+   **Then** it proceeds in chat with question 1, and is not delayed or prevented.
+5. **Given** a checkpoint that used the page has ended, **When** the repository is compared with
+   its state before, **Then** the page has added or changed nothing in it.
+
+---
+
 ### Edge Cases
 
 - What happens when a developer's free-text answer is factually correct but phrased differently
@@ -134,6 +166,19 @@ a question is asked from it, rather than a question being asked against absent i
   a question from different, already-established spec content for that difficulty level instead;
   if no such alternative content exists anywhere in the spec, the checkpoint says so plainly
   rather than asking an untruthful question or silently padding the session.
+- What happens when the page cannot be offered (what it needs to run is missing)? The offer is
+  skipped without comment and the checkpoint runs in chat, exactly as without this story.
+- What happens when the page cannot start (for example no free port)? The developer is told why
+  in one line and the checkpoint carries on in chat.
+- What happens when `spec.md` changes while the page is open (an approved repair, or an edit)?
+  The page says the spec has changed and offers to reload; it does not change under the reader.
+- What happens when the spec contains a diagram and the diagram cannot be drawn (no internet
+  connection, or a diagram with an error in it)? The diagram's source is shown in its place.
+- What happens when someone other than the developer reaches the page's port? Without the
+  one-time key in the address they are refused and see none of the spec.
+- What happens if the developer's temporary folder is inside the project? The page keeps its
+  running-state file somewhere outside the project instead, and if there is no such place it
+  does not start (and the checkpoint carries on in chat).
 
 ## Requirements *(mandatory)*
 
@@ -193,6 +238,27 @@ a question is asked from it, rather than a question being asked against absent i
   manifest, commands, and hook registration), installable into a Spec Kit project the same way an
   existing precedent extension is installed, rather than as changes hand-made to Spec Kit's own
   files.
+- **FR-018**: Before question 1, and after any approved repair, System MUST offer once per
+  session to show `spec.md` on a page in the developer's browser. When what the page needs to
+  run is missing, System MUST skip the offer silently; when the page cannot start, System MUST
+  say why in one line; in both cases the checkpoint proceeds in chat (FR-016).
+- **FR-019**: The page MUST be read-only: it MUST show `spec.md` as it currently is on disk and
+  MUST NOT offer any way to change `spec.md` or to record anything about the session. The
+  questions, answers and judging MUST stay in the conversation.
+- **FR-020**: The page MUST render the spec with every heading as a link target and with each
+  reference to a requirement the spec defines showing that requirement in place. When the page
+  is open, a coaching pointer to a spec heading (FR-008) MUST include a link to that heading.
+- **FR-021**: The page MUST be reachable only with the address given to the developer, which
+  carries a one-time key; a request without the key MUST be refused and shown none of the spec.
+  The page MUST be reachable through a port forwarded to the developer's own machine.
+- **FR-022**: Running the page MUST NOT add or change any file in the project (FR-012). Any
+  running-state it keeps MUST be outside the project and removed when the page stops. The page
+  MUST stop when the checkpoint ends, and on its own after a period without use.
+- **FR-023**: The page MUST draw the spec's diagrams. A page whose spec has no diagram MUST load
+  nothing from outside the developer's machine; a page whose spec has one MAY load a single
+  diagram-drawing script, and MUST show the diagram's source when it cannot be drawn.
+- **FR-024**: The page MUST tell the reader when `spec.md` has changed since the page was loaded
+  and offer to reload, and MUST tell the reader when the page has stopped.
 
 ### Key Entities
 
@@ -204,6 +270,9 @@ a question is asked from it, rather than a question being asked against absent i
 - **Comprehension Checkpoint Session**: The developer's single, ephemeral progression through
   the five fixed difficulty levels against one spec, in one sitting — including any retries
   needed to advance past a given level. Never written to any repository file.
+- **Spec Page**: An optional, read-only view of one `spec.md` in the developer's browser, alive
+  for at most one checkpoint session — its address (with a one-time key) and the link target of
+  each heading. Holds nothing about the session; leaves nothing in the project.
 
 ## Success Criteria *(mandatory)*
 
@@ -223,6 +292,12 @@ a question is asked from it, rather than a question being asked against absent i
 - **SC-005**: A repository diff taken after running the checkpoint never contains new questions,
   answers, scores, or completion markers — the only `spec.md` changes possible are content
   repairs/clarifications made before the checkpoint began (FR-003), never checkpoint bookkeeping.
+- **SC-006**: A checkpoint run with the page and a checkpoint run without it ask the same
+  questions and judge them the same way; the page changes only where the spec is read.
+- **SC-007**: After a checkpoint that used the page, the project's files are identical to what
+  they would be had the page not been used, and no page is left running.
+- **SC-008**: With the page open, a developer coached toward a spec heading reaches that heading
+  in one click.
 
 ## Assumptions
 
@@ -231,6 +306,9 @@ a question is asked from it, rather than a question being asked against absent i
 - The checkpoint runs inside the same interactive AI coding-assistant session used to author or
   review the spec, so it can read `spec.md` directly and judge free-text answers using its own
   language understanding — no separate grading service or model is introduced.
+- The spec page (User Story 4) is optional and needs a scripting runtime commonly present on a
+  developer's machine; where it is absent the checkpoint is unaffected. Drawing a diagram needs
+  an internet connection; nothing else about the page does.
 - "Developer" means the single individual currently working the spec in their own session;
   multi-user or shared checkpoint sessions are out of scope for this feature.
 - This feature is delivered using the same Spec Kit extension mechanism (manifest, commands,

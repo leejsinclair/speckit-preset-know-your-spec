@@ -103,7 +103,35 @@ change and why it's needed, then ask for explicit approval before touching `spec
     quiz loop (Step 3) rather than asking an untruthful question or padding the session with
     something ungrounded. Do not fabricate a question at that level.
 
-If Step 1 produced no repairs, skip this step entirely and go straight to question 1.
+If Step 1 produced no repairs, skip this step entirely.
+
+## Step 2a — Offer the spec page, once, before question 1
+
+The developer may read `spec.md` on a page in their browser while they answer: the spec rendered
+with its headings as link targets and a preview of each requirement where it is referenced. The
+page is read-only. The questions, the answers and the judging all stay here in the conversation.
+
+The page is served by `.specify/extensions/know-your-spec/scripts/python/specpage.py`, run with
+`python3`. If that file or `python3` is missing, skip this step without mentioning it — the
+checkpoint is complete without the page.
+
+1. **Ask once per session**: "Open the spec on a page in your browser, or stay in chat?" Say
+   that this only changes where they read the spec, not the checkpoint. Do not ask again later
+   in the session.
+2. **Page chosen:**
+   - run `python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec
+     <path to spec.md> --status`;
+   - if `running` is false, start it in the background with the same command minus `--status`,
+     and read `address` and `anchors` from the one JSON line it prints; if a page is already
+     running, use the `address` and `anchors` that `--status` returned and ask the developer to
+     reload it;
+   - give the developer the address exactly as printed, including its `?t=` part;
+   - **never open, fetch or post to the page address yourself** — it is for the developer only.
+3. **The page cannot start** (a non-zero exit with `refusals`, such as `port-unavailable`): say
+   why in one line and carry on in chat. Never let the page delay or prevent question 1.
+4. **Chat chosen**, or no clear choice: carry on in chat.
+
+Then go to question 1.
 
 ## Step 3 — The question loop
 
@@ -129,7 +157,10 @@ For each level:
    (step 1 of the loop, next level) — or to Step 4 if this was question 5.
 6. **If incorrect/incomplete**:
    - Explain the specific gap in their answer, without revealing the complete expected answer.
-   - Point them to the relevant `source_heading` in `spec.md`.
+   - Point them to the relevant `source_heading` in `spec.md`. If the spec page is running, also
+     give a link straight to that heading: the page address followed by `#` and that heading's
+     value in `anchors` (for example `http://127.0.0.1:8100/?t=…#edge-cases`). Take the anchor
+     from `anchors`; never make one up.
    - Present a **newly-worded** question at the *same* difficulty level — never the identical
      phrasing twice in a row.
    - Let the developer answer again. Repeat this sub-step with no limit on the number of
@@ -150,12 +181,18 @@ from which were skipped (e.g. by level: Recognise ✓ passed, Explain ✓ passed
 Trace ✓ passed, Evaluate ✓ passed). Do not write this summary, or any part of the session, to
 `spec.md` or any other file.
 
+If you started the spec page in Step 2a, stop it now with
+`python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec <path to
+spec.md> --stop`.
+
 ## Step 5 — Early exit
 
 The developer can end the session at any point before completion, for any reason, simply by
 saying so. If they do: acknowledge it and stop immediately. Do not write a partial summary, a
 partial record, or anything else about the session to any file — there is nothing to clean up,
-because nothing was ever written in the first place.
+because nothing was ever written in the first place. If you started the spec page in Step 2a,
+stop it with `python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec
+<path to spec.md> --stop`.
 
 ## Invariants (apply throughout every step above)
 
@@ -165,7 +202,10 @@ because nothing was ever written in the first place.
   reason (including "helpfully" saving a transcript or notes). The **only** exception is an
   explicitly developer-approved repair to `spec.md`'s own established content from Step 2 — that
   is a deliberate edit to the spec's substance, not checkpoint bookkeeping, and it only ever
-  happens with the developer's explicit prior approval.
+  happens with the developer's explicit prior approval. The spec page (Step 2a) does not change
+  this: it only shows `spec.md`, it has no way to change anything, and it keeps nothing in the
+  repository — while it runs it holds its own address in the system's temporary folder and
+  removes it when it stops.
 - **Never block.** This command's outcome — whether it completes, is exited early, or is never
   run at all — must never gate or be required by any other Spec Kit command. Running `/speckit-
   plan`, `/speckit-tasks`, or `/speckit-implement` afterward behaves identically whether or not

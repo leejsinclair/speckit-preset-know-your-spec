@@ -13,31 +13,35 @@ Apply → Trace → Evaluate), judged semantically, coached-and-retried with no 
 explicit per-question skip/reveal, and a session-only completion summary — nothing is ever
 persisted to the repo except developer-approved `spec.md` repairs made before a question is
 asked. The command fires automatically via a mandatory (`optional: false`) `after_specify` hook
-and can also be run manually at any time. No scripts beyond the core `check-prerequisites.sh`, no
+and can also be run manually at any time. One optional script — the read-only spec page helper
+(User Story 4, added in 1.1.0; research.md §15) — beyond the core `check-prerequisites.sh`; no
 config file, no companion preset — every decision below was settled directly with the developer
 in a design-tree interview (14 rounds) before this plan was written; this plan formalizes those
 decisions rather than re-deriving them.
 
 ## Technical Context
 
-**Language/Version**: N/A — the extension is a YAML manifest plus a Markdown command file,
-interpreted by the installing agent at runtime; no compiled or interpreted application code is
-shipped.
+**Language/Version**: The checkpoint itself is a YAML manifest plus a Markdown command file,
+interpreted by the installing agent at runtime. The optional spec page (User Story 4) is one
+Python file, `scripts/python/specpage.py`, Python 3.11+, standard library only.
 
 **Primary Dependencies**: Spec Kit CLI `>=1.0.2` (the extension/hook mechanism itself). No
 external services, libraries, or models — the checkpoint runs inside the same interactive AI
 session that authored the spec (assumption in spec.md) and reuses core `check-prerequisites.sh`
-to locate `spec.md`.
+to locate `spec.md`. The spec page needs `python3` (declared optional in the manifest) and, only
+to draw a diagram, loads `mermaid@11` from the jsDelivr CDN in the developer's browser.
 
 **Storage**: N/A by design. FR-012 / SC-005 require the checkpoint to write nothing to the repo
 except an approved `spec.md` content repair (FR-003) made before a question is asked — never
-questions, answers, scores, or completion markers.
+questions, answers, scores, or completion markers. The spec page keeps one runtime file (its
+address and process id) outside the project, removed when it stops (FR-022).
 
 **Testing**: A bash test runner (`tests/run.sh`), mirroring the reference precedent's structure —
 `tests/deterministic/` (manifest/command-file structural assertions, e.g. shellcheck-style
 validation of frontmatter, hook wiring, alias safety) and `tests/judgment/` (single-shot `claude
 -p --output-format json` evals diffed against hand-authored `expected/*.json`, plus isolated
-single-turn behavioral probes). No governance tier — this repo's constitution is still the
+single-turn behavioral probes). The spec page adds `tests/unit/` (Python `unittest`: the Markdown
+renderer and the page server), run by `tests/deterministic/test-spec-page.sh`. No governance tier — this repo's constitution is still the
 unfilled template, so there is nothing ratified to check compliance against.
 
 **Target Platform**: Any Spec Kit project with the extension installed. The manifest and command
@@ -54,14 +58,15 @@ here needs a `prepend`/`append`/`wrap` template strategy (extension-provided tem
 conversational feature). SC-001 gives the relevant target: a full five-question session completes
 in under 10 minutes assuming no more than one or two retries per level.
 
-**Constraints**: Zero persistence (FR-012, SC-005); zero blocking of any other Spec Kit command
-(FR-016, SC-004); no external tool/service dependency (Assumptions); no attempt cap on retries
+**Constraints**: Zero persistence (FR-012, SC-005, and FR-022 for the page); zero blocking of any
+other Spec Kit command (FR-016, SC-004); no required external tool/service dependency
+(Assumptions — `python3` is optional and its absence changes nothing); no attempt cap on retries
 (FR-009); mandatory auto-fire on `after_specify` with no confirmation prompt (`optional: false` —
 the automatic, unprompted nature is the feature's core value proposition, not an interruption to
 soften).
 
 **Scale/Scope**: One extension, one command (+ one alias), one mandatory hook, zero config
-surface, zero additional scripts, zero additional templates.
+surface, one optional script (the spec page helper), zero additional templates.
 
 ## Constitution Check
 
@@ -97,16 +102,20 @@ standalone single-extension repo (confirmed against the official `extensions/tem
 not analogized from a multi-artifact monorepo precedent):
 
 ```text
-extension.yml                              # Manifest: id, commands, hooks, tags
+extension.yml                              # Manifest: id, commands, scripts, hooks, tags
 commands/
 └── speckit.know-your-spec.check.md        # The Comprehension Checkpoint command
-.extensionignore                            # Excludes specs/, tests/, .specify/, .claude/, .gitignore from installs
+scripts/
+└── python/
+    └── specpage.py                        # The read-only spec page helper (User Story 4)
+.extensionignore                            # Excludes specs/, tests/, .specify/, .claude/, .git/, caches from installs
 README.md
 LICENSE                                     # MIT
 CHANGELOG.md
 tests/
 ├── run.sh
-├── deterministic/                          # Manifest/command-file structural checks
+├── deterministic/                          # Manifest/command-file structural checks; runs tests/unit/
+├── unit/                                   # Python unit tests for the spec page helper
 └── judgment/
     ├── eval.sh
     ├── fixtures/                           # This repo's own spec.md + 2-3 synthetic specs
@@ -116,8 +125,8 @@ specs/                                      # This project's own Spec Kit artifa
                                              # excluded from installs via .extensionignore
 ```
 
-**Structure Decision**: Single flat-at-root Spec Kit extension package, no companion preset, no
-subdirectory nesting. `.extensionignore` keeps `specs/`, `tests/`, `.specify/`, and `.claude/` out
+**Structure Decision**: Single flat-at-root Spec Kit extension package, no companion preset. The
+one script lives at `scripts/python/specpage.py` and is declared under `provides.scripts`. `.extensionignore` keeps `specs/`, `tests/`, `.specify/`, and `.claude/` out
 of what `specify extension add` copies into a consumer's `.specify/extensions/know-your-spec/`.
 
 ## Complexity Tracking

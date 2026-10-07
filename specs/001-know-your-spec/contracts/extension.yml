@@ -11,7 +11,7 @@ schema_version: "1.0"
 extension:
   id: "know-your-spec"
   name: "Know Your Spec"
-  version: "1.0.0"
+  version: "1.1.2"
   description: "A Comprehension Checkpoint for Spec Kit: quizzes the developer on a finished spec.md, one question at a time across five fixed difficulty levels, judged semantically and coached until understood — nothing is ever persisted to the repo"
   author: "Lee Sinclair"
   repository: "https://github.com/leejsinclair/speckit-preset-know-your-spec"
@@ -19,7 +19,11 @@ extension:
 
 requires:
   speckit_version: ">=1.0.0"
-  # No external tools or services (Assumptions in spec.md; research.md §4)
+  # No required external tools or services (Assumptions in spec.md; research.md §4). python3
+  # (3.11+, standard library only) is optional: it runs the spec page (research.md §15).
+  tools:
+    - name: "python3"
+      required: false
 
 # Primary command name follows speckit.<ext-id>.<cmd>; aliases are free-form (research.md §2).
 provides:
@@ -29,8 +33,13 @@ provides:
       description: "Comprehension Checkpoint: five questions on spec.md's established content, one at a time, fixed increasing difficulty (Recognise/Explain/Apply/Trace/Evaluate), coached retries with no attempt cap, explicit per-question skip/reveal, session-only — nothing persisted"
       aliases: ["speckit.kys-check"]
 
-  # No config, no templates, no scripts beyond the core check-prerequisites.sh already provided
-  # by Spec Kit itself (research.md §4-5).
+  # The read-only spec page (spec.md User Story 4; research.md §15).
+  scripts:
+    - name: "specpage"
+      file: "scripts/python/specpage.py"
+      description: "Read-only spec page: serves spec.md rendered, for the developer to read while answering"
+
+  # No config and no templates (research.md §5).
 
 # Fires automatically with no confirmation prompt — this is deliberate (research.md §3): the
 # automatic, unprompted nature of the checkpoint is the feature's value proposition.

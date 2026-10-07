@@ -36,6 +36,36 @@ ever written to `spec.md` or any other file. The only way this extension ever to
 an explicitly developer-approved repair to `spec.md`'s own content, decided before the quiz
 begins.
 
+### The spec page (optional)
+
+Before question 1 the checkpoint asks once: "Open the spec on a page in your browser, or stay in
+chat?" If you choose the page, it starts a small local server and gives you an address. The page
+shows `spec.md` rendered — headings you can link to, a preview of each requirement where it is
+referenced (hover `FR-003`), and a notice when the file changes — so a coaching hint can link
+straight to the heading it points at. The quiz itself stays in the conversation.
+
+- The page is read-only: it has no route that changes anything.
+- It answers only at the address it gave you, which carries a one-time key.
+- It listens on every network interface (`0.0.0.0`), so the page works when the project runs in
+  a container or on a remote machine and the port is forwarded to your PC: forward the port and
+  open the address as given. This also means other machines on the same network can reach the
+  port; without the key they get a refusal. To keep it to the one machine, start it yourself
+  with `--host 127.0.0.1`.
+- Mermaid diagrams in the spec are drawn in the browser. For that, a page whose spec has a
+  diagram loads one script, `mermaid@11` from the jsDelivr CDN, so drawing needs an internet
+  connection; without one the diagram's source is shown. A spec with no diagram loads nothing
+  from the internet.
+- It needs `python3` (3.11 or later, standard library only). Without it the offer is skipped and
+  the checkpoint is exactly as described above.
+- It keeps nothing in the repository. While it runs, it holds its address in the system's
+  temporary folder (or, if that is inside the project, somewhere outside it); it stops when the checkpoint ends, or after an hour without use.
+
+You can also run it yourself:
+
+```bash
+python3 .specify/extensions/know-your-spec/scripts/python/specpage.py serve --spec specs/<feature>/spec.md
+```
+
 ## Install
 
 ```bash
@@ -45,11 +75,12 @@ specify extension add --dev /path/to/speckit-preset-know-your-spec
 or, once published:
 
 ```bash
-specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.0.0.zip
+specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.2.zip
 ```
 
-This registers `speckit.know-your-spec.check` (alias `speckit.kys-check`) and wires the mandatory
-`after_specify` hook — no config file is materialized, since the checkpoint's mechanics (five
+This registers `speckit.know-your-spec.check` (alias `speckit.kys-check`), wires the mandatory
+`after_specify` hook, and installs the spec page helper under
+`.specify/extensions/know-your-spec/scripts/` — no config file is materialized, since the checkpoint's mechanics (five
 questions, fixed difficulty order, uncapped retries, zero persistence) are fixed, not tunable.
 
 ## Usage
@@ -68,10 +99,12 @@ completes. You can also run it manually at any time against the active feature's
 ```text
 extension.yml              Manifest: id, command, hook
 commands/                  The Comprehension Checkpoint command
+scripts/python/specpage.py The read-only spec page (standard library only)
 .extensionignore           Excludes specs/, tests/, .specify/, .claude/ from installs
 tests/
 ├── run.sh                 Runs both test tiers
-├── deterministic/         Dependency-free manifest/command-file structural checks
+├── deterministic/         Manifest/command-file structural checks; runs tests/unit/
+├── unit/                  The spec page's renderer and server (python3 -m unittest)
 └── judgment/              claude -p evals against hand-authored ground truth
     ├── fixtures/          This repo's own spec.md + synthetic specs exercising edge cases
     ├── expected/          Hand-authored ground truth (questions, answers, headings)
