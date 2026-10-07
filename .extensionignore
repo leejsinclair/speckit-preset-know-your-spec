@@ -2,4 +2,7 @@ specs/
 tests/
 .specify/
 .claude/
+.git/
 .gitignore
+__pycache__/
+*.pyc

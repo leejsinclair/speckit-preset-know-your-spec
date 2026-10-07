@@ -187,3 +187,33 @@ decision, rationale, and rejected alternative(s).
   circular/self-graded eval). This decision stands as given and is not re-litigated.
 - **Alternatives considered**: Author drafts, developer reviews and corrects before lock-in (the
   author's initial recommendation — explicitly not chosen).
+
+## 15. Read-only spec page (added in 1.1.0; supersedes §4 for the page only)
+
+- **Decision**: Ship one helper, `scripts/python/specpage.py`, that serves the active feature's
+  `spec.md` as a read-only page in the developer's browser. The command offers it once, before
+  question 1. The quiz stays in the conversation. `python3` is an optional tool: without it the
+  offer is skipped and the checkpoint is as designed in §1-14.
+- **Rationale**: Coaching already points the developer at a `spec.md` heading (FR-008); a page
+  with link targets on every heading and a preview of each requirement where it is referenced
+  makes that pointer one click. The approach is the one the engineer-in-the-loop extension uses
+  for its review page (its feature 004): a standard-library helper declared under
+  `provides.scripts`, a Markdown renderer copied rather than depended on, a one-request-at-a-time
+  server on loopback with a `Host` check and a per-process token, and a runtime file in the OS
+  temporary directory so the command can find or stop a running page. Only that read-only half is
+  taken; everything there that records an answer has no counterpart here.
+- **Why this does not breach FR-012 / SC-005**: the page has no route that changes anything, and
+  the helper's one file is outside the repository and removed when the page stops. A unit test
+  compares the project's files before and after serving.
+- **Why it does not breach FR-016**: the offer is skipped silently when the helper or `python3`
+  is absent, and a page that cannot start is reported in one line and the checkpoint continues.
+- **Alternatives considered**: answering the questions on the page (rejected — it needs a relay
+  for answers and breaks the one-at-a-time coached loop for no gain); depending on
+  `rich-specification-viewer` (rejected — a second install).
+- **Diagrams**: a Mermaid block is drawn in the browser by `mermaid@11` from the jsDelivr CDN, as
+  in `rich-specification-viewer`. The page's policy names that origin, and the page loads the
+  script, only when the spec has a diagram; a spec without one loads nothing from elsewhere. If
+  the script cannot be loaded or a diagram cannot be drawn, its source stays. The helper itself
+  fetches nothing. Alternatives considered: showing source only (rejected — a diagram's source is
+  a poor aid to comprehension); a diagram-script opt-in as in engineer-in-the-loop (rejected —
+  this extension has no config file, §5, and a second question before question 1 is not worth it).

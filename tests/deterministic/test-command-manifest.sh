@@ -33,6 +33,17 @@ awk '/after_specify:/{found=1} found && /optional:/{print; exit}' "$MANIFEST" \
   | grep -q 'optional: false' \
   || fail "after_specify hook is not optional: false (mandatory auto-fire is required — research.md §3)"
 
+# extension.yml: the spec page helper is declared, shipped, and never required (research.md §15)
+grep -q 'file: "scripts/python/specpage.py"' "$MANIFEST" \
+  || fail "extension.yml does not declare scripts/python/specpage.py under provides.scripts"
+[ -f "$ROOT/scripts/python/specpage.py" ] \
+  || fail "scripts/python/specpage.py is declared in extension.yml but missing"
+awk '/name: "python3"/{found=1; next} found{print; exit}' "$MANIFEST" \
+  | grep -q 'required: false' \
+  || fail "python3 must be an optional tool (required: false) — the checkpoint works without the spec page"
+grep -q '.specify/extensions/know-your-spec/scripts/python/specpage.py' "$CMD_FILE" \
+  || fail "command file does not call the spec page helper at its installed path"
+
 # command file: frontmatter present and closed, description non-empty
 FIRST_LINE=$(head -n1 "$CMD_FILE")
 [ "$FIRST_LINE" = "---" ] || fail "command file does not start with YAML frontmatter delimiter"

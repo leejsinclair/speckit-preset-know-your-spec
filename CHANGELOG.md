@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0 - 2026-10-08
+
+- Optional read-only spec page. Before question 1 the checkpoint asks once whether to open
+  `spec.md` on a page in the browser; coaching hints then link straight to the heading they point
+  at. The quiz stays in the conversation.
+- New helper `scripts/python/specpage.py` (standard library only): serves on loopback behind a
+  one-time key, has no route that changes anything, and keeps nothing in the repository.
+- Mermaid diagrams in the spec are drawn on the page by `mermaid@11`, loaded from the jsDelivr
+  CDN only when the spec has a diagram. If it cannot be loaded, the diagram's source is shown.
+- `python3` is declared as an optional tool. Without it the checkpoint behaves as in 1.0.0.
+
 ## 1.0.0 - 2026-09-22
 
 Initial release.
