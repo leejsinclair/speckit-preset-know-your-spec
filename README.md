@@ -45,8 +45,12 @@ referenced (hover `FR-003`), and a notice when the file changes — so a coachin
 straight to the heading it points at. The quiz itself stays in the conversation.
 
 - The page is read-only: it has no route that changes anything.
-- It listens on `127.0.0.1` only, answers only at the address it gave you (which carries a
-  one-time key).
+- It answers only at the address it gave you, which carries a one-time key.
+- It listens on every network interface (`0.0.0.0`), so the page works when the project runs in
+  a container or on a remote machine and the port is forwarded to your PC: forward the port and
+  open the address as given. This also means other machines on the same network can reach the
+  port; without the key they get a refusal. To keep it to the one machine, start it yourself
+  with `--host 127.0.0.1`.
 - Mermaid diagrams in the spec are drawn in the browser. For that, a page whose spec has a
   diagram loads one script, `mermaid@11` from the jsDelivr CDN, so drawing needs an internet
   connection; without one the diagram's source is shown. A spec with no diagram loads nothing
@@ -71,7 +75,7 @@ specify extension add --dev /path/to/speckit-preset-know-your-spec
 or, once published:
 
 ```bash
-specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.0.zip
+specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.1.zip
 ```
 
 This registers `speckit.know-your-spec.check` (alias `speckit.kys-check`), wires the mandatory

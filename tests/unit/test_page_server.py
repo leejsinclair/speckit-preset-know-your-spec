@@ -127,6 +127,13 @@ class PageTest(ServerCase):
         self.assertNotIn("http", headers["Content-Security-Policy"])
         self.assertNotIn('<meta name="kys-diagram-script"', text)
 
+    def test_the_default_bind_is_every_interface_and_the_address_names_loopback(self):
+        self.assertEqual(self.server.bound_host, "0.0.0.0")
+        self.assertEqual(self.server.server_address[0], "0.0.0.0")
+        self.assertTrue(self.server.address.startswith(f"http://127.0.0.1:{self.server.port}/?t="))
+        status, _, _ = self.request(f"/?t={self.server.token}", headers={"Host": f"localhost:{self.server.port + 1}"})
+        self.assertEqual(status, 200)
+
     def test_the_spec_is_read_again_on_every_request(self):
         first = json.loads(self.request("/state", token=True)[2])["hash"]
         self.spec.write_text(SPEC + "\nMore.\n", encoding="utf-8")

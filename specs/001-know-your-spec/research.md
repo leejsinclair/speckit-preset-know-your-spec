@@ -199,7 +199,8 @@ decision, rationale, and rejected alternative(s).
   makes that pointer one click. The approach is the one the engineer-in-the-loop extension uses
   for its review page (its feature 004): a standard-library helper declared under
   `provides.scripts`, a Markdown renderer copied rather than depended on, a one-request-at-a-time
-  server on loopback with a `Host` check and a per-process token, and a runtime file in the OS
+  server with a `Host` check and a per-process token (bound to every interface here, so a
+  forwarded port reaches it), and a runtime file in the OS
   temporary directory so the command can find or stop a running page. Only that read-only half is
   taken; everything there that records an answer has no counterpart here.
 - **Why this does not breach FR-012 / SC-005**: the page has no route that changes anything, and

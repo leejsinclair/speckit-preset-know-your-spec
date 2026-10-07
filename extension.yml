@@ -14,7 +14,7 @@ schema_version: "1.0"
 extension:
   id: "know-your-spec"
   name: "Know Your Spec"
-  version: "1.1.0"
+  version: "1.1.1"
   description: "A Comprehension Checkpoint for Spec Kit: quizzes the developer on a finished spec.md, one question at a time across five fixed difficulty levels, judged semantically and coached until understood — nothing is ever persisted to the repo"
   author: "Lee Sinclair"
   repository: "https://github.com/leejsinclair/speckit-preset-know-your-spec"
@@ -37,7 +37,7 @@ provides:
       aliases: ["speckit.kys-check"]
 
   # The read-only spec page (research.md §15): standard library only, serves spec.md to the
-  # developer's browser on loopback and writes nothing to the repository.
+  # developer's browser (every interface, behind a one-time key) and writes nothing to the repository.
   scripts:
     - name: "specpage"
       file: "scripts/python/specpage.py"

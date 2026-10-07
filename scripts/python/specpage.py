@@ -21,8 +21,9 @@ viewer. Adaptations:
   draws it in the browser; if the script cannot be loaded the source stays. A spec without a
   diagram loads nothing from anywhere. This script itself never fetches anything.
 
-The server follows the same extension's ``eil/reviewpage.py``: one request at a time, loopback by
-default, a ``Host`` check and a per-process token on every request. Tests: ``tests/unit/``.
+The server follows the same extension's ``eil/reviewpage.py``: one request at a time, a ``Host``
+check and a per-process token on every request. Unlike it, the default bind is every interface
+(``0.0.0.0``) so that a forwarded port reaches the page; ``--host 127.0.0.1`` keeps it to this machine. Tests: ``tests/unit/``.
 """
 
 from __future__ import annotations
@@ -675,6 +676,9 @@ SCRIPT = r"""
 # ---- the server
 
 LOOPBACK = ("127.0.0.1", "localhost", "::1")
+# Every interface, so a forwarded port (a container, a remote machine) reaches the page. The token
+# in the address is what admits a request; the address still names 127.0.0.1, the forwarded end.
+DEFAULT_HOST = "0.0.0.0"
 FIRST_PORT, LAST_PORT = 8100, 8199
 IDLE_MINUTES = 60.0
 
@@ -881,7 +885,7 @@ def _first_free(host: str) -> int:
 def make_server(
     spec: Path,
     *,
-    host: str = "127.0.0.1",
+    host: str = DEFAULT_HOST,
     port: int | None = None,
     public_name: str | None = None,
     idle_minutes: float = IDLE_MINUTES,
@@ -996,7 +1000,7 @@ def serve(
     spec: Path,
     *,
     emit: Any,
-    host: str = "127.0.0.1",
+    host: str = DEFAULT_HOST,
     port: int | None = None,
     public_name: str | None = None,
     idle_minutes: float = IDLE_MINUTES,
@@ -1043,7 +1047,7 @@ def main(argv: list[str] | None = None) -> int:
     actions = parser.add_subparsers(dest="action", required=True)
     a = actions.add_parser("serve", help="start the page, or with --status / --stop report or end it")
     a.add_argument("--spec", required=True, type=Path, help="the spec.md to show")
-    a.add_argument("--host", default="127.0.0.1", help="bind address (default: 127.0.0.1)")
+    a.add_argument("--host", default=DEFAULT_HOST, help=f"bind address (default: {DEFAULT_HOST}, every interface)")
     a.add_argument("--port", type=int, help=f"use exactly this port (default: first free from {FIRST_PORT})")
     a.add_argument("--public-name", help="the host name the person opens, when --host is not loopback")
     a.add_argument("--idle-minutes", type=float, default=IDLE_MINUTES, help="stop after this long without use")
