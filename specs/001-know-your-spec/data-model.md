@@ -13,7 +13,7 @@ One of the five questions asked in a single checkpoint session.
 | Field | Type | Description | Source FR |
 |---|---|---|---|
 | `level` | enum: `Recognise` \| `Explain` \| `Apply` \| `Trace` \| `Evaluate` | Fixed difficulty level, strictly increasing across the session, never regressing. | FR-006 |
-| `format` | enum: `multiple-choice` \| `free-text` | `Recognise`/`Explain` (questions 1-2) are `multiple-choice` when the underlying content supports plausible, mutually exclusive options, else `free-text`. `Apply`/`Trace`/`Evaluate` (questions 3-5) are always `free-text`. | FR-005 |
+| `format` | enum: `multiple-choice` \| `free-text` | `Recognise`/`Explain` (questions 1-2) are `multiple-choice` when the underlying content supports plausible, mutually exclusive options with exactly one correct answer, else `free-text`. `Apply`/`Trace`/`Evaluate` (questions 3-5) are always `free-text`. | FR-005 |
 | `text` | string | The question as presented to the developer. Re-worded on each retry at the same level — never the same phrasing twice in a row. | FR-008 |
 | `source_heading` | string | The specific `spec.md` heading the question is derived from. Must exist and be traceable — never invented. | FR-001, FR-002, SC-002 |
 | `expected_answer` | string (private) | One unambiguous answer target (one fact, outcome, or judgment), derived before the question is presented; never shown to the developer, even on failure — only a coaching hint pointing at `source_heading` is shown. | FR-002, FR-008 |

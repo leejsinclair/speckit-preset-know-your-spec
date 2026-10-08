@@ -74,10 +74,10 @@ an earlier level later in the session.
 
 **Acceptance Scenarios**:
 
-1. **Given** a new checkpoint session starts, **When** the first question is generated and the
-   Recognise-level content supports plausible multiple-choice options, **Then** it is presented
-   as multiple-choice; **When** that content does not support plausible options, **Then** it is
-   presented as a free-text explanation instead.
+1. **Given** a new checkpoint session starts, **When** a question's Recognise/Explain-level
+   content supports plausible multiple-choice options with exactly one correct answer, **Then** it
+   is presented as multiple-choice; **When** that content does not support such options, **Then** it
+   is presented as a free-text answer instead.
 2. **Given** the checkpoint has advanced past questions 1 and 2, **When** later questions are
    generated, **Then** they always require a free-text explanation and progress through Apply,
    Trace, and Evaluate in that order.
