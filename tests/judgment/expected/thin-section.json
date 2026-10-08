@@ -40,8 +40,8 @@
     {
       "level": "Apply",
       "format": "free-text",
-      "text": "A user's import has rows that failed because of a transient conflict. What does the user need to do?",
-      "expected_answer": "Nothing. Failed rows are retried automatically.",
+      "text": "Does the user have to trigger a retry for rows that fail because of a transient conflict?",
+      "expected_answer": "No. The system retries failed rows automatically.",
       "source_heading": "FR-001; FR-002"
     },
     {
@@ -55,15 +55,15 @@
   "trace_question_if_approved": {
     "level": "Trace",
     "format": "free-text",
-    "text": "What happens to a specific row if it fails all 3 retry attempts?",
-    "expected_answer": "The system stops retrying that row and reports it as permanently failed.",
+    "text": "How is a row reported after failing all 3 retry attempts?",
+    "expected_answer": "It is reported as permanently failed.",
     "source_heading": "Edge Cases (repaired, per repairs_expected)"
   },
   "trace_question_if_declined": {
     "level": "Trace",
     "format": "free-text",
-    "text": "What happens to a specific row if it fails all 3 retry attempts?",
-    "expected_answer": "The system stops retrying that row and reports it as permanently failed.",
+    "text": "How is a row reported after failing all 3 retry attempts?",
+    "expected_answer": "It is reported as permanently failed.",
     "source_heading": "User Story 2 Acceptance Scenario 2 (used as the already-established alternative, since the Edge Cases repair was declined)"
   }
 }

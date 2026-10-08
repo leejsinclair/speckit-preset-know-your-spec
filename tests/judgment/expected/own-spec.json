@@ -35,7 +35,7 @@
       "level": "Trace",
       "format": "free-text",
       "text": "After a developer answers incorrectly, does the checkpoint advance to the next level?",
-      "expected_answer": "No. It stays at the current level until the developer demonstrates understanding or skips.",
+      "expected_answer": "No. It stays at the current level.",
       "source_heading": "FR-009"
     },
     {

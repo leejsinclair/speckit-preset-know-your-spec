@@ -48,6 +48,12 @@ BARE_CALLS=$(tr '\n' ' ' < "$CMD_FILE" | grep -oE '.{60}specpage\.py +serve' \
   | grep -vE 'python3 +\.specify/extensions/know-your-spec/scripts/python/specpage\.py +serve' || true)
 [ -z "$BARE_CALLS" ] || fail "command file calls the spec page helper without python3 and its installed path: $BARE_CALLS"
 
+# command file: every question has one clear answer target, never compound
+grep -q 'Every question MUST target one fact, outcome, or judgment and have one unambiguous answer' "$CMD_FILE" \
+  || fail "command file does not require a single, unambiguous answer target per question"
+grep -q 'Do not ask compound questions' "$CMD_FILE" \
+  || fail "command file does not prohibit compound questions"
+
 # command file: frontmatter present and closed, description non-empty
 FIRST_LINE=$(head -n1 "$CMD_FILE")
 [ "$FIRST_LINE" = "---" ] || fail "command file does not start with YAML frontmatter delimiter"
