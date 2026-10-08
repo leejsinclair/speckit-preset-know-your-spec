@@ -15,30 +15,30 @@
       "level": "Explain",
       "format": "free-text",
       "mc_rejected_reason": "The distinction (sustained multi-day shift vs. single-day anomaly) is a comparative behavioral rule, not reducible to a small set of clean mutually-exclusive options without trivializing or muddying the comparison.",
-      "text": "Explain the difference in how the system responds to a sustained multi-day shift in engagement pattern versus a single anomalous day.",
-      "expected_answer": "A sustained shift across multiple consecutive days causes the inferred window to gradually move to reflect the new pattern, while a single anomalous day causes no shift at all — the system distinguishes durable pattern change from one-off noise.",
-      "source_heading": "FR-003; FR-004; User Story 2 Acceptance Scenarios"
+      "text": "How does the inferred window change after a sustained shift in engagement pattern?",
+      "expected_answer": "The inferred window gradually moves to reflect the new pattern.",
+      "source_heading": "FR-003"
     },
     {
       "level": "Apply",
       "format": "free-text",
-      "text": "A new user has just installed the app and has no behavioral history yet. According to this spec, what quiet-hours window should they be given, and why?",
-      "expected_answer": "A conservative default window, because there isn't yet sufficient behavioral history to support an inference; this avoids sending notifications at all hours for a brand-new user.",
+      "text": "A new user has no behavioral history yet. What quiet-hours window should they be given?",
+      "expected_answer": "A conservative default window.",
       "source_heading": "FR-002; User Story 1 Acceptance Scenario 1"
     },
     {
       "level": "Trace",
       "format": "free-text",
-      "text": "Trace what happens if a user dismisses a notification that arrives during their currently-inferred quiet window. Is that interaction discarded, or does it affect future inference?",
-      "expected_answer": "It's treated as a valid signal like any other and feeds into the ongoing inference — it is not discarded as out-of-window noise.",
+      "text": "Does dismissing a notification during the inferred quiet window affect future inference?",
+      "expected_answer": "Yes. The dismissal is a valid signal for future inference.",
       "source_heading": "FR-006; Edge Cases"
     },
     {
       "level": "Evaluate",
       "format": "free-text",
-      "text": "This spec requires both that the window never shifts on a single anomalous day (FR-004) and that it does shift gradually after a sustained change (FR-003). How would the system distinguish 'day 3 of a real shift' from 'just another anomalous day' before enough days have accumulated to be sure?",
-      "expected_answer": "The spec doesn't specify an exact day-count threshold — it establishes the behavioral contract (a single day never shifts it; multiple consecutive days does) without prescribing the underlying inference mechanism's precise boundary, leaving that as an implementation-level decision for planning rather than something spec.md itself resolves.",
-      "source_heading": "FR-003; FR-004"
+      "text": "Does the spec define the exact number of days that makes an engagement shift sustained?",
+      "expected_answer": "No. The spec does not define an exact day-count threshold.",
+      "source_heading": "FR-003"
     }
   ]
 }

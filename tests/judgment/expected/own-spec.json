@@ -20,30 +20,30 @@
     {
       "level": "Explain",
       "format": "free-text",
-      "text": "What must happen if spec.md doesn't have enough established content to truthfully support a question at some difficulty level?",
-      "expected_answer": "The system must propose a repair or clarification to spec.md and obtain the developer's explicit approval before applying it, rather than asking an untruthful question or editing spec.md silently.",
+      "text": "Does the checkpoint need explicit approval before applying a spec repair?",
+      "expected_answer": "Yes. The developer's explicit approval is required.",
       "source_heading": "User Story 3 - The checkpoint never tests information the spec doesn't establish (Priority: P2); FR-003"
     },
     {
       "level": "Apply",
       "format": "free-text",
-      "text": "Suppose a developer answers a checkpoint question by describing how they'd implement it (e.g. naming a specific database table) instead of addressing the spec-level question. How should the system respond?",
-      "expected_answer": "Treat it as out of scope for the checkpoint (that belongs to planning, not this check), coach the developer back toward spec-level content, and re-ask rather than grading the implementation-detail answer as correct or incorrect.",
+      "text": "A developer answers with an implementation detail instead of spec-level content. Is that answer in scope for the checkpoint?",
+      "expected_answer": "No. Implementation details are out of scope for this checkpoint.",
       "source_heading": "Edge Cases"
     },
     {
       "level": "Trace",
       "format": "free-text",
-      "text": "Trace what happens across a checkpoint session if a developer answers the same question incorrectly many times in a row, right up until they explicitly ask to skip it. What gets recorded, and does the session end?",
-      "expected_answer": "Coaching and retrying continues indefinitely at that difficulty level with no attempt cap and no automatic reveal. The developer can explicitly skip/reveal that one question, which is recorded as skipped rather than passed, and the session continues to the next level rather than ending.",
-      "source_heading": "Edge Cases; FR-009; FR-010"
+      "text": "After a developer answers incorrectly, does the checkpoint advance to the next level?",
+      "expected_answer": "No. It stays at the current level until the developer demonstrates understanding or skips.",
+      "source_heading": "FR-009"
     },
     {
       "level": "Evaluate",
       "format": "free-text",
-      "text": "Two of this spec's guarantees are: (a) a developer only advances past a level after a judged-correct answer or an explicit skip, and (b) nothing about a session is ever written to the repository. Is there tension between these when a developer declines a proposed spec.md repair, and how does the spec resolve it?",
-      "expected_answer": "No lasting tension: an approved repair is a deliberate edit to spec.md's own content, distinct from session bookkeeping, so it doesn't conflict with guarantee (b). If a repair is declined, the checkpoint substitutes different already-established content for that level, or states plainly that none exists — it never persists a failed/partial result and never asks an untruthful question, so both guarantees hold simultaneously.",
-      "source_heading": "Edge Cases; FR-003; FR-012; SC-005"
+      "text": "Does the spec allow checkpoint answers to be written to repository files?",
+      "expected_answer": "No. Checkpoint answers are never written to repository files.",
+      "source_heading": "FR-012"
     }
   ]
 }
