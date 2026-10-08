@@ -21,7 +21,9 @@ understanding, and never blocks or persists anything.
 | *(immediately after)* | Automatic (`after_specify` hook, mandatory) | The Comprehension Checkpoint fires: five questions, one at a time, at fixed increasing difficulty (Recognise → Explain → Apply → Trace → Evaluate) |
 | `/speckit-plan`, `/speckit-tasks`, `/speckit-implement` | Spec Kit | Unmodified — the checkpoint is advisory only and never gates any later stage |
 
-Each question is judged on semantic understanding, not exact wording. A wrong or incomplete
+Each question targets one fact, outcome, or judgment and has one unambiguous answer; questions
+never combine ideas or require multiple facts in a response. Each answer is judged on semantic
+understanding, not exact wording. A wrong or incomplete
 answer gets a coaching hint (pointing at the relevant `spec.md` heading, never revealing the
 answer outright) and a newly-worded question at the same difficulty level — with no limit on
 retries. A developer stuck on one question can explicitly skip or reveal just that question

@@ -13,10 +13,10 @@ One of the five questions asked in a single checkpoint session.
 | Field | Type | Description | Source FR |
 |---|---|---|---|
 | `level` | enum: `Recognise` \| `Explain` \| `Apply` \| `Trace` \| `Evaluate` | Fixed difficulty level, strictly increasing across the session, never regressing. | FR-006 |
-| `format` | enum: `multiple-choice` \| `free-text` | `Recognise`/`Explain` (questions 1-2) are `multiple-choice` when the underlying content supports plausible, mutually exclusive options, else `free-text`. `Apply`/`Trace`/`Evaluate` (questions 3-5) are always `free-text`. | FR-005 |
+| `format` | enum: `multiple-choice` \| `free-text` | `Recognise`/`Explain` (questions 1-2) are `multiple-choice` when the underlying content supports plausible, mutually exclusive options with exactly one correct answer, else `free-text`. `Apply`/`Trace`/`Evaluate` (questions 3-5) are always `free-text`. | FR-005 |
 | `text` | string | The question as presented to the developer. Re-worded on each retry at the same level — never the same phrasing twice in a row. | FR-008 |
 | `source_heading` | string | The specific `spec.md` heading the question is derived from. Must exist and be traceable — never invented. | FR-001, FR-002, SC-002 |
-| `expected_answer` | string (private) | Derived before the question is presented; never shown to the developer, even on failure — only a coaching hint pointing at `source_heading` is shown. | FR-002, FR-008 |
+| `expected_answer` | string (private) | One unambiguous answer target (one fact, outcome, or judgment), derived before the question is presented; never shown to the developer, even on failure — only a coaching hint pointing at `source_heading` is shown. | FR-002, FR-008 |
 | `attempts` | integer | Count of incorrect/incomplete attempts at this level so far in the session. Uncapped — no maximum enforced. | FR-009 |
 | `outcome` | enum: `passed` \| `skipped` | `passed` once an answer is judged to demonstrate understanding; `skipped` if the developer explicitly invokes the skip/reveal option instead. Never silently advanced. | FR-010, SC-003 |
 
@@ -28,6 +28,10 @@ discarded when the conversation ends.
 **Validation rules**:
 - `source_heading` must reference content that exists in `spec.md` at question-presentation time
   (after any approved repairs — see User Story 3 / FR-003).
+- A question targets one fact, outcome, or judgment supported by `source_heading`; it does not
+  combine separate requirements or ideas or require multiple facts in its answer (FR-002).
+- A multiple-choice question has exactly one correct option; a free-text response need only express
+  the one answer target, using any semantically equivalent wording (FR-002, FR-005, FR-007).
 - A question's `level` must never be earlier than the `level` of the question immediately before
   it in the same session (FR-006, SC-003).
 - `format` is `free-text` unconditionally for `level` in `{Apply, Trace, Evaluate}`; conditional

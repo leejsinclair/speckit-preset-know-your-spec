@@ -27,6 +27,10 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
    - Privately derive, for each of the five fixed levels (Recognise, Explain, Apply, Trace,
      Evaluate), the question, its expected answer, and the `spec.md` heading supporting it
      (FR-001, FR-002).
+   - Every question targets one fact, outcome, or judgment supported by a specific heading and
+     has one unambiguous answer. It must not combine ideas, require synthesis across requirements,
+     or expect multiple facts in a response (FR-002). Multiple-choice questions have exactly one
+     correct option; free-text answers may be paraphrased but express that one answer target.
    - For any level whose supporting content is absent or ambiguous, derive a proposed repair or
      clarification to `spec.md` instead of inventing an untruthful question (FR-003).
    - If any repairs were derived, present them together as one consolidated approval request
@@ -46,8 +50,8 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
 
 2. **Question loop** (repeated once per level, in fixed order, never regressing — FR-006):
    - Present the question. Format is `multiple-choice` for levels 1-2 only when plausible,
-     mutually exclusive options exist; `free-text` otherwise for 1-2, and always for levels 3-5
-     (FR-005).
+     mutually exclusive options with exactly one correct answer exist; `free-text` otherwise for
+     1-2, and always for levels 3-5 (FR-005).
    - Wait for the developer's answer before presenting anything else (FR-004).
    - Judge the answer on semantic understanding, not exact wording (FR-007). An answer that
      strays into implementation detail (code, frameworks, libraries, schema, endpoints) is

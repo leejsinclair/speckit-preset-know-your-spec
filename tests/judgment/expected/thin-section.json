@@ -26,44 +26,44 @@
     {
       "level": "Explain",
       "format": "multiple-choice",
-      "text": "Explain how User Story 2 changes the import experience compared to User Story 1 when some rows fail.",
+      "text": "When rows fail, what does the system do with those rows?",
       "options": [
         "The whole file is re-uploaded by the user",
-        "Only the failed rows are automatically retried, up to 3 attempts each, before being reported as permanently failed",
+        "Only the failed rows are automatically retried",
         "Failed rows are skipped and never retried",
         "The import is cancelled entirely if any row fails"
       ],
       "correct_option_index": 1,
-      "expected_answer": "Only the rows that failed are automatically retried (up to 3 total attempts each); rows still failing after 3 attempts are reported as permanently failed, without affecting the rows that did succeed.",
-      "source_heading": "FR-002; FR-003; User Story 2"
+      "expected_answer": "Only failed rows are automatically retried.",
+      "source_heading": "FR-002"
     },
     {
       "level": "Apply",
       "format": "free-text",
-      "text": "A user uploads a file where 3 of 20 rows fail on the first attempt due to a transient conflict, but would succeed if retried. What does the user need to do, and what will the final report show?",
-      "expected_answer": "Nothing — the user doesn't need to re-upload anything. The system automatically retries just those 3 rows, and the final report shows all 20 rows succeeded (3 of them after retry), assuming the retries succeed within 3 attempts.",
-      "source_heading": "FR-001; FR-002; FR-004; User Story 2 Acceptance Scenario 1"
+      "text": "Does the user have to trigger a retry for rows that fail because of a transient conflict?",
+      "expected_answer": "No. The system retries failed rows automatically.",
+      "source_heading": "FR-001; FR-002"
     },
     {
       "level": "Evaluate",
       "format": "free-text",
-      "text": "This spec requires the system to both retry failed rows automatically (FR-002) and cap retries at 3 attempts per row (FR-003). If a row failed on attempts 1 and 2 but succeeded on attempt 3, would it be reported as succeeded or as failed?",
-      "expected_answer": "Succeeded — FR-004 requires reporting rows that succeeded only after a retry as succeeded, distinct from rows that are permanently failed after exhausting all 3 attempts (FR-003). Succeeding on the 3rd attempt is still success, not permanent failure.",
-      "source_heading": "FR-002; FR-003; FR-004"
+      "text": "A row succeeds on its third attempt. How is it reported?",
+      "expected_answer": "It is reported as succeeded.",
+      "source_heading": "FR-004"
     }
   ],
   "trace_question_if_approved": {
     "level": "Trace",
     "format": "free-text",
-    "text": "What happens to a specific row if it fails all 3 retry attempts?",
-    "expected_answer": "The system stops retrying that row, reports it as permanently failed, and still reports the rows that did succeed rather than treating the whole import as failed.",
+    "text": "How is a row reported after failing all 3 retry attempts?",
+    "expected_answer": "It is reported as permanently failed.",
     "source_heading": "Edge Cases (repaired, per repairs_expected)"
   },
   "trace_question_if_declined": {
     "level": "Trace",
     "format": "free-text",
-    "text": "What happens to a specific row if it fails all 3 retry attempts?",
-    "expected_answer": "The system stops retrying that row, reports it as permanently failed, and still reports the rows that did succeed rather than treating the whole import as failed.",
+    "text": "How is a row reported after failing all 3 retry attempts?",
+    "expected_answer": "It is reported as permanently failed.",
     "source_heading": "User Story 2 Acceptance Scenario 2 (used as the already-established alternative, since the Edge Cases repair was declined)"
   }
 }

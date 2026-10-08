@@ -54,12 +54,14 @@ confirming the checkpoint advances to the next difficulty level.
 ### User Story 2 - Question difficulty progresses through five fixed levels (Priority: P2)
 
 The checkpoint asks exactly five questions, one per difficulty level, in a fixed increasing
-order: Recognise (purpose, a canonical term, or the primary actor), Explain (a documented
-user-story relationship, business rule, or happy-path ordering), Apply (the requirements applied
-to a concrete scenario), Trace (an edge case, failure condition, or acceptance path through
-documented behavior), and Evaluate (reconciling an implication or potential inconsistency across
-requirements, scenarios, and success criteria). Questions 1 and 2 are multiple-choice; questions 3
-through 5 require a free-text explanation.
+order: Recognise (one fact about the purpose, a canonical term, or the primary actor), Explain
+(one documented business rule or happy-path ordering), Apply (one requirement applied to a
+concrete scenario), Trace (one documented outcome for an edge case, failure condition, or
+acceptance path), and Evaluate (one judgment about the clarity or implication of a specific
+documented rule). Every question has one unambiguous answer supported by a specific spec heading;
+it never combines facts or requires synthesizing multiple ideas. Questions 1 and 2 are
+multiple-choice when exactly one correct option is plausible; questions 3 through 5 require a
+free-text answer expressing one answer target.
 
 **Why this priority**: The requested question progression, and the specific difficulty
 structure behind it, is a defining, explicit part of the request; without it this is just an
@@ -72,10 +74,10 @@ an earlier level later in the session.
 
 **Acceptance Scenarios**:
 
-1. **Given** a new checkpoint session starts, **When** the first question is generated and the
-   Recognise-level content supports plausible multiple-choice options, **Then** it is presented
-   as multiple-choice; **When** that content does not support plausible options, **Then** it is
-   presented as a free-text explanation instead.
+1. **Given** a new checkpoint session starts, **When** a question's Recognise/Explain-level
+   content supports plausible multiple-choice options with exactly one correct answer, **Then** it
+   is presented as multiple-choice; **When** that content does not support such options, **Then** it
+   is presented as a free-text answer instead.
 2. **Given** the checkpoint has advanced past questions 1 and 2, **When** later questions are
    generated, **Then** they always require a free-text explanation and progress through Apply,
    Trace, and Evaluate in that order.
@@ -186,8 +188,11 @@ heading, and that the repository is unchanged after the page stops.
 
 - **FR-001**: System MUST derive every question solely from `spec.md`'s established content
   (its requirements, user stories, edge cases, or success criteria).
-- **FR-002**: Before presenting any question, System MUST privately derive that question's
-  expected answer and the `spec.md` heading that supports it.
+- **FR-002**: Before presenting any question, System MUST privately derive one unambiguous expected
+  answer and the specific `spec.md` heading that supports it. Each question MUST target one fact,
+  outcome, or judgment; MUST NOT be compound, combine separate requirements or ideas, or require
+  synthesizing multiple facts. The expected answer MUST contain only that answer target, and a
+  free-text response MUST NOT be expected to supply additional facts.
 - **FR-003**: If the content needed to truthfully support a question at a given difficulty level
   is absent or ambiguous in `spec.md`, System MUST propose a repair or clarification to `spec.md`
   and obtain the developer's explicit approval before applying it, rather than testing the
@@ -197,8 +202,8 @@ heading, and that the repository is unchanged after the page stops.
   waiting for and assessing each answer before presenting the next.
 - **FR-005**: System MUST present questions 1 and 2 in multiple-choice format when the
   corresponding Recognise/Explain-level content supports plausible, mutually exclusive options,
-  and MUST fall back to a free-text explanation for either of those questions when it does not.
-  Questions 3 through 5 MUST always be free-text explanations.
+  with exactly one correct option, and MUST fall back to a free-text answer for either of those
+  questions when it does not. Questions 3 through 5 MUST always be free-text answers.
 - **FR-006**: System MUST order the five questions by fixed increasing difficulty: Recognise,
   then Explain, then Apply, then Trace, then Evaluate, and MUST never present a question at an
   earlier difficulty level than the question before it.

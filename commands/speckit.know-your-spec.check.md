@@ -49,12 +49,12 @@ the developer — it is preparation, not part of the conversation.
 
 For each of the five fixed difficulty levels, in this fixed order:
 
-1. **Recognise** — the spec's purpose, a canonical term it defines, or its primary actor.
-2. **Explain** — a documented user-story relationship, business rule, or happy-path ordering.
-3. **Apply** — the requirements applied to a concrete scenario.
-4. **Trace** — an edge case, failure condition, or acceptance path through documented behavior.
-5. **Evaluate** — reconciling an implication or potential inconsistency across requirements, user
-   scenarios, and success criteria.
+1. **Recognise** — one fact about the spec's purpose, a canonical term it defines, or its primary
+   actor.
+2. **Explain** — one documented business rule or happy-path ordering.
+3. **Apply** — one requirement applied to a concrete scenario.
+4. **Trace** — one documented outcome for an edge case, failure condition, or acceptance path.
+5. **Evaluate** — one judgment about the clarity or implication of a specific documented rule.
 
 For each level, derive:
 
@@ -71,14 +71,23 @@ definitions — those belong to `plan.md`, not this checkpoint; a spec written t
 "no implementation details" standard shouldn't contain that material to draw from in the first
 place, but do not introduce it yourself even so.
 
+### Single-answer questions
+
+Every question MUST target one fact, outcome, or judgment and have one unambiguous answer supported
+by a specific `spec.md` heading. Do not ask compound questions, combine separate requirements or
+ideas, or require the developer to synthesize multiple facts. Keep the private `expected_answer` to
+that one answer target; do not require or reward extra facts. For multiple-choice questions, exactly
+one option must be correct. Free-text answers may use different wording, but only need to express
+that one answer target.
+
 ### Format (Recognise / Explain only — questions 1 and 2)
 
 Use multiple-choice **only** when the content supports genuinely plausible, mutually exclusive
-options — i.e. distractors a developer who skimmed the spec could plausibly pick, not obviously
-wrong filler. When the Recognise or Explain-level content doesn't lend itself to that (too open-
-ended, no natural set of alternatives), use a free-text question instead for that level. This is
-a judgment call made independently per question — question 1 could be multiple-choice while
-question 2 is free-text, or vice versa, or both, or neither.
+options with exactly one correct answer — i.e. distractors a developer who skimmed the spec could
+plausibly pick, not obviously wrong filler. When the Recognise or Explain-level content doesn't
+lend itself to that (too open-ended, no natural set of alternatives), use a free-text question
+instead for that level. This is a judgment call made independently per question — question 1 could
+be multiple-choice while question 2 is free-text, or vice versa, or both, or neither.
 
 Questions 3 through 5 (Apply, Trace, Evaluate) are **always** free-text — never multiple-choice.
 
@@ -145,8 +154,8 @@ For each level:
 2. Wait for the developer's answer. Do not present anything else — no hints, no next question —
    until they respond.
 3. Judge the answer against the private `expected_answer` for **semantic understanding**, not
-   exact wording. A developer who explains the same idea in their own words has answered
-   correctly.
+   exact wording. A developer who expresses that same answer target in their own words has
+   answered correctly; do not require additional facts.
 4. If the answer strays into implementation detail (code, frameworks, libraries, database schema,
    endpoint definitions) instead of addressing the spec-level question, that is out of scope for
    this checkpoint — it belongs to planning, not here. Do not grade it as correct or incorrect

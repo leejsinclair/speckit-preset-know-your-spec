@@ -40,23 +40,23 @@
     {
       "level": "Apply",
       "format": "free-text",
-      "text": "A user currently has read receipts on, reads 5 messages, then toggles read receipts off, then reads 3 more messages. How many of these 8 messages will have sent a read receipt?",
-      "expected_answer": "5 — the first 5 messages were read while receipts were on and are unaffected by the later toggle (not retracted), while the 3 read after toggling off will not send a receipt.",
-      "source_heading": "FR-003; Acceptance Scenarios 1 and 3"
+      "text": "After a user turns read receipts off, will a message read afterward send a receipt?",
+      "expected_answer": "No. Messages read after receipts are turned off do not send a receipt.",
+      "source_heading": "FR-003"
     },
     {
       "level": "Evaluate",
       "format": "free-text",
-      "text": "This spec requires that a toggle change applies only to future messages (FR-003) and that a change takes effect for the very next message with no delay (SC-001). If a user reads a message at nearly the same instant they toggle the setting, is there any ambiguity about which behavior applies?",
-      "expected_answer": "The spec doesn't explicitly resolve simultaneity — it establishes a clear ordering rule (only messages read after the change are affected) and a no-delay requirement, but doesn't define precisely what 'at the same instant' means. FR-003's before/after framing implies the read event's own timestamp relative to the toggle event is what should govern, but this is a legitimate ambiguity the spec leaves unresolved.",
-      "source_heading": "FR-003; SC-001"
+      "text": "Does the spec say what happens when a message is read at exactly the same instant the setting is toggled?",
+      "expected_answer": "No. The spec does not define the outcome for simultaneous events.",
+      "source_heading": "FR-003"
     }
   ],
   "trace_question_if_approved": {
     "level": "Trace",
     "format": "free-text",
     "text": "What happens if the toggle change fails to apply, for example due to a connectivity issue?",
-    "expected_answer": "The setting reverts to its previous value and the user sees an error, rather than silently leaving the setting in an inconsistent partial state.",
+    "expected_answer": "The setting reverts to its previous value.",
     "source_heading": "Edge Cases (repaired, per repairs_expected)"
   },
   "trace_outcome_if_declined": {

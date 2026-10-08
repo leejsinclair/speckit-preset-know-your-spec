@@ -74,7 +74,10 @@ Continue the session from step 2 through all five questions.
 - Questions appear in fixed order: Recognise → Explain → Apply → Trace → Evaluate, never
   regressing to an earlier level (FR-006).
 - Question 1/2 are multiple-choice when the underlying content supports plausible, mutually
-  exclusive options; free-text otherwise. Questions 3-5 are always free-text (FR-005).
+  exclusive options with exactly one correct answer; free-text otherwise. Questions 3-5 are always
+  free-text (FR-005).
+- Every question asks for one fact, outcome, or judgment with one unambiguous answer; none combines
+  ideas or requires multiple facts in a response (FR-002).
 
 To exercise the free-text fallback for questions 1-2, run against a synthetic fixture spec whose
 Recognise/Explain-level content doesn't lend itself to plausible distractors (see
