@@ -27,11 +27,12 @@ Run the Comprehension Checkpoint against the active feature's `spec.md`: five qu
 time, at fixed increasing difficulty, judged on semantic understanding and coached until the
 developer demonstrates it — never on exact wording, never with an attempt cap, and never leaving
 anything behind in the repository except a developer-approved repair to `spec.md` itself. Invoked
-automatically by the `after_specify` hook immediately after a spec is written, and independently
-re-runnable on demand against any existing spec.
+automatically by the `after_clarify` hook when `/speckit-clarify` finishes, and independently
+re-runnable on demand against any existing spec, whether or not clarification has been run.
 
-**Trigger awareness**: this may be hook-triggered (fired automatically right after
-`/speckit-specify` completed) or explicit/manual. Either way the behavior below is identical —
+**Trigger awareness**: this may be hook-triggered (fired automatically when `/speckit-clarify`
+finished, including runs that asked no questions, runs ended early and repeat runs) or
+explicit/manual. Either way the behavior below is identical —
 there is no different silent-exit behavior for the automatic case, since this checkpoint has
 nothing to skip quietly (unlike an assessment that might be a no-op with nothing new to report,
 every finished spec has content to quiz on).
@@ -39,8 +40,11 @@ every finished spec has content to quiz on).
 ## Step 0 — Locate the spec
 
 Resolve the active feature's `spec.md` the same way `.specify/scripts/bash/check-prerequisites.sh`
-resolves it (via `.specify/feature.json`). If no `spec.md` can be resolved for the active feature,
-say so plainly and stop — do not fabricate a session against a spec that doesn't exist.
+resolves it (via `.specify/feature.json`). Read `spec.md` from disk at the start of every session
+and derive everything from that reading, not from any earlier view of the spec in the
+conversation, so edits made during clarification are what gets quizzed. If no `spec.md` can be
+resolved for the active feature, say so plainly and stop — do not fabricate a session against a
+spec that doesn't exist.
 
 ## Step 1 — Derive privately, before showing anything
 

@@ -28,10 +28,21 @@ EXT_ID=$(grep -m1 '^\s*id:' "$MANIFEST" | sed -E 's/.*id:\s*"?([a-z0-9-]+)"?.*/\
 echo "$EXT_ID" | grep -Eq '^[a-z0-9-]+$' \
   || fail "extension id '$EXT_ID' does not match ^[a-z0-9-]+\$"
 
-# extension.yml: after_specify hook is mandatory (optional: false)
-awk '/after_specify:/{found=1} found && /optional:/{print; exit}' "$MANIFEST" \
+# extension.yml: after_clarify hook exists under hooks: and is mandatory (optional: false)
+awk '/^hooks:/{inhooks=1; next} inhooks && /^[a-z]/{inhooks=0} inhooks && /after_clarify:/{found=1} found && /optional:/{print; exit}' "$MANIFEST" \
   | grep -q 'optional: false' \
-  || fail "after_specify hook is not optional: false (mandatory auto-fire is required — research.md §3)"
+  || fail "after_clarify hook is missing under hooks: or is not optional: false (specs/002-checkpoint-after-clarify/research.md §1)"
+
+# extension.yml: nothing is registered for after_specify (FR-026)
+! grep -q 'after_specify' "$MANIFEST" \
+  || fail "extension.yml still mentions after_specify (specs/002-checkpoint-after-clarify FR-026)"
+! grep -q 'after_specify' "$CMD_FILE" \
+  || fail "command file still mentions after_specify (specs/002-checkpoint-after-clarify FR-026)"
+
+# Step 0 reads spec.md from disk every session, so edits made during clarification are quizzed
+STEP0=$(awk '/^## Step 0/{f=1; next} /^## Step 1/{f=0} f' "$CMD_FILE")
+echo "$STEP0" | grep -q 'from disk' \
+  || fail "Step 0 of the command file does not say to read spec.md from disk (specs/002-checkpoint-after-clarify/research.md §6)"
 
 # extension.yml: the spec page helper is declared, shipped, and never required (research.md §15)
 grep -q 'file: "scripts/python/specpage.py"' "$MANIFEST" \

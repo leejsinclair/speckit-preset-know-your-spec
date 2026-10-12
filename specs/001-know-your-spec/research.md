@@ -40,6 +40,9 @@ decision, rationale, and rejected alternative(s).
 - **Alternatives considered**: `optional: true` (my initial recommendation, reasoning the
   checkpoint is a heavier interruption than typical automated hooks) — explicitly rejected by the
   developer.
+- **Note (2026-10-11)**: the hook event was changed from `after_specify` to `after_clarify` by
+  spec 002 (`specs/002-checkpoint-after-clarify/research.md §1`). The decision that the hook is
+  mandatory (`optional: false`) stands.
 
 ## 4. Scripts
 

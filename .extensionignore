@@ -6,3 +6,5 @@ tests/
 .gitignore
 __pycache__/
 *.pyc
+CLAUDE.md
+insights/

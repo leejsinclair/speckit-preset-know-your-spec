@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.0 - 2026-10-11
+
+- The automatic start moved from the end of `/speckit-specify` to the end of `/speckit-clarify`.
+  It starts whether clarification asked questions, was ended early or is being run again. Nothing
+  from the extension runs after `/speckit-specify`.
+- If you do not run clarification, start the checkpoint by hand with
+  `/speckit-know-your-spec-check` or `/speckit-kys-check`.
+- The session, the spec page and zero persistence are unchanged. Spec Kit `>=1.0.0` is still the
+  requirement, and upgrading needs no manual step.
+- A project whose `/speckit-clarify` command was set up by an older Spec Kit and never refreshed
+  may not start the checkpoint until that project's Spec Kit files are upgraded.
+- Each session now reads `spec.md` from disk first, so edits made during clarification are what
+  gets quizzed.
+
 ## 1.1.2 - 2026-10-08
 
 - The command now stops the spec page by the helper's full installed path; the short form it

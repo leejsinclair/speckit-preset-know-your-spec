@@ -9,7 +9,7 @@ understanding before moving on to planning.
 Spec Kit's lifecycle is `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` →
 `/speckit-implement`. It's easy for a spec to get written — by the developer, or drafted by an AI
 assistant from a short description — without the developer actually having internalized what it
-says. Know Your Spec closes that gap: immediately after a spec is finished, it asks five
+says. Know Your Spec closes that gap: when clarification finishes, it asks five
 questions about the spec's own content, coaches the developer until they demonstrate real
 understanding, and never blocks or persists anything.
 
@@ -17,8 +17,9 @@ understanding, and never blocks or persists anything.
 
 | Stage | Runs | What happens |
 |---|---|---|
-| `/speckit-specify` | Spec Kit | Unmodified — this extension doesn't touch spec generation itself |
-| *(immediately after)* | Automatic (`after_specify` hook, mandatory) | The Comprehension Checkpoint fires: five questions, one at a time, at fixed increasing difficulty (Recognise → Explain → Apply → Trace → Evaluate) |
+| `/speckit-specify` | Spec Kit | Unmodified, and nothing from this extension runs after it |
+| `/speckit-clarify` | Spec Kit | Unmodified, except that the checkpoint starts when it finishes |
+| *(when clarification finishes)* | Automatic (`after_clarify` hook, mandatory) | The Comprehension Checkpoint fires: five questions, one at a time, at fixed increasing difficulty (Recognise → Explain → Apply → Trace → Evaluate) |
 | `/speckit-plan`, `/speckit-tasks`, `/speckit-implement` | Spec Kit | Unmodified — the checkpoint is advisory only and never gates any later stage |
 
 Each question targets one fact, outcome, or judgment and has one unambiguous answer; questions
@@ -77,18 +78,19 @@ specify extension add --dev /path/to/speckit-preset-know-your-spec
 or, once published:
 
 ```bash
-specify extension add --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.1.2.zip
+specify extension add know-your-spec --from https://github.com/leejsinclair/speckit-preset-know-your-spec/archive/refs/tags/v1.2.0.zip
 ```
 
 This registers `speckit.know-your-spec.check` (alias `speckit.kys-check`), wires the mandatory
-`after_specify` hook, and installs the spec page helper under
+`after_clarify` hook, and installs the spec page helper under
 `.specify/extensions/know-your-spec/scripts/` — no config file is materialized, since the checkpoint's mechanics (five
 questions, fixed difficulty order, uncapped retries, zero persistence) are fixed, not tunable.
 
 ## Usage
 
-Normally you don't invoke this directly — it fires automatically right after `/speckit-specify`
-completes. You can also run it manually at any time against the active feature's `spec.md`:
+Normally you don't invoke this directly: it starts on its own when `/speckit-clarify` finishes.
+If you skip clarification, or want to go again, run it by hand at any time against the active
+feature's `spec.md`:
 
 ```bash
 /speckit-know-your-spec-check
@@ -102,7 +104,7 @@ completes. You can also run it manually at any time against the active feature's
 extension.yml              Manifest: id, command, hook
 commands/                  The Comprehension Checkpoint command
 scripts/python/specpage.py The read-only spec page (standard library only)
-.extensionignore           Excludes specs/, tests/, .specify/, .claude/ from installs
+.extensionignore           Excludes specs/, tests/, .specify/, .claude/, CLAUDE.md, insights/ from installs
 tests/
 ├── run.sh                 Runs both test tiers
 ├── deterministic/         Manifest/command-file structural checks; runs tests/unit/
