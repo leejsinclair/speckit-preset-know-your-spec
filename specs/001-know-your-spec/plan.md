@@ -12,7 +12,7 @@ Checkpoint against a finished `spec.md`, fixed at increasing difficulty (Recogni
 Apply → Trace → Evaluate), judged semantically, coached-and-retried with no attempt cap, with an
 explicit per-question skip/reveal, and a session-only completion summary — nothing is ever
 persisted to the repo except developer-approved `spec.md` repairs made before a question is
-asked. The command fires automatically via a mandatory (`optional: false`) `after_specify` hook
+asked. The command fires automatically via a mandatory (`optional: false`) `after_clarify` hook
 and can also be run manually at any time. One optional script — the read-only spec page helper
 (User Story 4, added in 1.1.0; research.md §15) — beyond the core `check-prerequisites.sh`; no
 config file, no companion preset — every decision below was settled directly with the developer
@@ -25,7 +25,7 @@ decisions rather than re-deriving them.
 interpreted by the installing agent at runtime. The optional spec page (User Story 4) is one
 Python file, `scripts/python/specpage.py`, Python 3.11+, standard library only.
 
-**Primary Dependencies**: Spec Kit CLI `>=1.0.2` (the extension/hook mechanism itself). No
+**Primary Dependencies**: Spec Kit CLI `>=1.0.0` (the extension/hook mechanism itself). No
 external services, libraries, or models — the checkpoint runs inside the same interactive AI
 session that authored the spec (assumption in spec.md) and reuses core `check-prerequisites.sh`
 to locate `spec.md`. The spec page needs `python3` (declared optional in the manifest) and, only
@@ -61,7 +61,7 @@ in under 10 minutes assuming no more than one or two retries per level.
 **Constraints**: Zero persistence (FR-012, SC-005, and FR-022 for the page); zero blocking of any
 other Spec Kit command (FR-016, SC-004); no required external tool/service dependency
 (Assumptions — `python3` is optional and its absence changes nothing); no attempt cap on retries
-(FR-009); mandatory auto-fire on `after_specify` with no confirmation prompt (`optional: false` —
+(FR-009); mandatory auto-fire on `after_clarify` with no confirmation prompt (`optional: false` —
 the automatic, unprompted nature is the feature's core value proposition, not an interruption to
 soften).
 

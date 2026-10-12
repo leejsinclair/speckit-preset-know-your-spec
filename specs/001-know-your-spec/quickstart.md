@@ -12,7 +12,7 @@ multi-turn developer/agent exchange):
 
 - **Step 1 (Install)** — validated for real: `specify extension add --dev` into a scratch
   project registered `speckit.know-your-spec.check` / `speckit.kys-check`, a mandatory
-  (`optional: false`) `after_specify` hook, and rendered both Claude skill files correctly, with
+  (`optional: false`) `after_clarify` hook, and rendered both Claude skill files correctly, with
   `.extensionignore` correctly keeping `specs/`, `tests/`, `.specify/`, `.claude/` out of the
   installed copy.
 - **Automated test suite** (`tests/run.sh`) — validated for real, full green as of last run:
@@ -45,18 +45,20 @@ specify extension add --dev /home/lee/projects/speckit-preset-know-your-spec
 ```
 
 **Expected outcome**: `speckit.know-your-spec.check` (and alias `speckit.kys-check`) are
-registered; `.specify/extensions.yml` in the target project gains an `after_specify` hook entry
+registered; `.specify/extensions.yml` in the target project gains an `after_clarify` hook entry
 with `optional: false`. No config file is materialized (this extension ships none).
 
 ## 2. Automatic trigger — Scenario: Take the comprehension checkpoint on a finished spec (User Story 1)
 
 ```bash
 /speckit-specify "some small test feature description"
+/speckit-clarify
 ```
 
-**Expected outcome**: immediately after the spec is written, the checkpoint fires automatically
-(no confirmation prompt — `optional: false`) and presents question 1, derived from specific
-content in the just-written `spec.md`.
+**Expected outcome**: nothing from the extension appears after `/speckit-specify`. When
+`/speckit-clarify` finishes, the checkpoint fires automatically (no confirmation prompt —
+`optional: false`) and presents question 1, derived from specific content in `spec.md` as it
+stands after clarification.
 
 - Answer question 1 incorrectly/incompletely.
 - **Expected**: a coaching hint naming the specific gap (without revealing the full answer),

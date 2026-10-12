@@ -45,7 +45,7 @@ The developer's single, ephemeral progression through all five difficulty levels
 | `pending_repairs` | list of proposed `spec.md` edits | Derived upfront (before question 1) wherever a difficulty level's needed content is absent or ambiguous; each entry requires explicit developer approval before being applied, and before the corresponding question is asked. If declined, the session must either substitute already-established alternative content for that level or say plainly that none exists — never ask an untruthful question or silently pad. | FR-003, User Story 3, Edge Cases |
 | `status` | enum: `in-progress` \| `completed` \| `exited-early` | `completed` once all 5 levels are resolved (passed or skipped); `exited-early` if the developer stops before that; never a `failed` status, since nothing is graded pass/fail at the session level. | FR-013, FR-014 |
 
-**Lifecycle**: begins either automatically (mandatory `after_specify` hook) or manually
+**Lifecycle**: begins either automatically (mandatory `after_clarify` hook) or manually
 (on-demand command invocation) → `pending_repairs` derived and resolved (approved/declined) →
 questions asked and resolved one at a time in fixed order → ends in `completed` (with a
 passed/skipped summary per FR-013) or `exited-early` (no summary persisted, nothing left behind

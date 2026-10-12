@@ -11,7 +11,7 @@ schema_version: "1.0"
 extension:
   id: "know-your-spec"
   name: "Know Your Spec"
-  version: "1.1.2"
+  version: "1.2.0"
   description: "A Comprehension Checkpoint for Spec Kit: quizzes the developer on a finished spec.md, one question at a time across five fixed difficulty levels, judged semantically and coached until understood — nothing is ever persisted to the repo"
   author: "Lee Sinclair"
   repository: "https://github.com/leejsinclair/speckit-preset-know-your-spec"
@@ -41,13 +41,14 @@ provides:
 
   # No config and no templates (research.md §5).
 
-# Fires automatically with no confirmation prompt — this is deliberate (research.md §3): the
-# automatic, unprompted nature of the checkpoint is the feature's value proposition.
+# Fires automatically with no confirmation prompt, at the end of /speckit-clarify. Nothing fires at
+# the end of /speckit-specify. The automatic, unprompted nature of the checkpoint is the feature's
+# value proposition (research.md §3; specs/002-checkpoint-after-clarify/research.md §1).
 hooks:
-  after_specify:
+  after_clarify:
     command: "speckit.know-your-spec.check"
     optional: false
-    description: "Run the five-question Comprehension Checkpoint immediately after a spec is finished"
+    description: "Run the five-question Comprehension Checkpoint when clarification finishes"
 
 tags:
   - "quality"

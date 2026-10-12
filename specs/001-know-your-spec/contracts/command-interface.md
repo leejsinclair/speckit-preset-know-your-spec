@@ -7,8 +7,9 @@ behavior against `spec.md` as input and the developer's chat replies as the othe
 
 ## Invocation
 
-- **Automatic**: fires via the mandatory `after_specify` hook, immediately once `/speckit-specify`
-  completes (FR-015).
+- **Automatic**: fires via the mandatory `after_clarify` hook when `/speckit-clarify` finishes
+  (FR-015); nothing fires after `/speckit-specify`. See
+  `specs/002-checkpoint-after-clarify/contracts/trigger.md`.
 - **Manual**: `/speckit-know-your-spec-check` (or its rendered skill/slash form) or the alias
   `/speckit-kys-check`, runnable on demand against any existing `spec.md` (FR-015).
 - **Input**: none required beyond the ambient feature context (`.specify/feature.json` /

@@ -228,8 +228,9 @@ heading, and that the repository is unchanged after the page stops.
   time; since no session state is ever persisted, no partial or failed result can be left behind
   by doing so.
 - **FR-015**: System MUST make the comprehension checkpoint available to run automatically
-  immediately after a spec is finished via `/speckit-specify`, and MUST also allow the developer
-  to run it manually on demand against any existing spec.
+  when clarification finishes via `/speckit-clarify`, and MUST also allow the developer to run it
+  manually on demand against any existing spec. (The original timing, immediately after
+  `/speckit-specify`, was superseded by spec 002 FR-025 and FR-026.)
 - **FR-016**: The comprehension checkpoint MUST be advisory only: it MUST NOT block, or be
   required by, any Spec Kit command (`/speckit-plan`, `/speckit-tasks`, `/speckit-implement`,
   etc.), and a project that has this preset installed but has not run the checkpoint MUST behave
